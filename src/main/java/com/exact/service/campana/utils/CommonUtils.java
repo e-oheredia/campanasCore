@@ -1,4 +1,5 @@
-package com.exact.campanas.utils;
+package com.exact.service.campana.utils;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,8 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.client.ClientProtocolException;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +19,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+
 public class CommonUtils {
+	
 	public static Map<String, Object> jsonToMap(JSONObject json) throws JSONException {
 	    Map<String, Object> retMap = new HashMap<String, Object>();
 
@@ -122,4 +125,5 @@ public class CommonUtils {
 		mapper.setFilterProvider(filterProvider); 		
 	    return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(objeto);
 	}
+	
 }

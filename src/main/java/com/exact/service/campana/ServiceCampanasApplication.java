@@ -1,4 +1,4 @@
-package com.exact.campanas;
+package com.exact.service.campana;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

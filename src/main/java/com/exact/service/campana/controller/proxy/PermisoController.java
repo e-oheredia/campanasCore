@@ -1,4 +1,4 @@
-package com.exact.campanas.controller.proxy;
+package com.exact.service.campana.controller.proxy;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.exact.campanas.utils.CommonUtils;
+import com.exact.service.campana.utils.CommonUtils;
+
 
 @RestController
 @RequestMapping("permisos")
