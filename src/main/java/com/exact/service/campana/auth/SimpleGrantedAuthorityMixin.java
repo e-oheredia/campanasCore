@@ -1,0 +1,13 @@
+package com.exact.service.campana.auth;
+
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public abstract class SimpleGrantedAuthorityMixin {
+	
+	@JsonCreator
+	public SimpleGrantedAuthorityMixin(@JsonProperty("nombre") String role) {}
+	
+	
+}
