@@ -19,12 +19,12 @@ import com.exact.service.campana.utils.CommonUtils;
 
 
 @RestController
-@RequestMapping("permisos")
-public class PermisoController {
+@RequestMapping("menus")
+public class MenuController {
 	
 	
 	
-	public PermisoController() {
+	public MenuController() {
 		restTemplate = new RestTemplate();
 	}
 
@@ -43,9 +43,12 @@ public class PermisoController {
 	    
 		UriComponentsBuilder builder = UriComponentsBuilder
 			    .fromUriString(serviceMenuUrl + "/menus")
-			    .queryParam("permisoIds", permisoIds);
+			    .queryParam("permisoIds", String.join(",", permisoIds.stream().map(id -> id.toString())
+						.collect(Collectors.toList())));
+		
+		String url = builder.toUriString();
 	    
-	    return restTemplate.getForEntity(builder.toUriString(), String.class);
+	    return restTemplate.getForEntity(url, String.class);
 	}
 	
 }
