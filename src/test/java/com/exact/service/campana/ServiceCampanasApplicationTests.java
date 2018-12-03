@@ -1,4 +1,4 @@
-package com.exact.campanas;
+package com.exact.service.campana;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
