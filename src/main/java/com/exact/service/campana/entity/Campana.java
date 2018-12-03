@@ -83,13 +83,233 @@ public class Campana implements Serializable {
 	@Transient
 	private Map<String, Object> proveedor;
 	
-	@OneToMany
+	@OneToOne(mappedBy = "campana", cascade=CascadeType.ALL)
+	private AccionRestosCargosCampana accionRestosCargosCampana;
+	
+	@OneToOne(mappedBy = "campana", cascade=CascadeType.ALL)
+	private AccionRestosRezagosCampana accionRestosRezagosCampana;
+	
+	@OneToOne(mappedBy = "campana", cascade=CascadeType.ALL)
+	private Auspiciador auspiciador;
+	
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="campana_id")
 	private Set<ItemCampana> itemsCampana;
 	
-	@OneToMany
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="campana_id")
 	private Set<SeguimientoCampana> seguimientosCampana;
+	
+
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public String getNombre() {
+		return nombre;
+	}
+
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+
+	public boolean isRegulatorio() {
+		return regulatorio;
+	}
+
+
+	public void setRegulatorio(boolean regulatorio) {
+		this.regulatorio = regulatorio;
+	}
+
+
+	public boolean isRequiereGps() {
+		return requiereGps;
+	}
+
+
+	public void setRequiereGps(boolean requiereGps) {
+		this.requiereGps = requiereGps;
+	}
+
+
+	public Long getCantidadLima() {
+		return cantidadLima;
+	}
+
+
+	public void setCantidadLima(Long cantidadLima) {
+		this.cantidadLima = cantidadLima;
+	}
+
+
+	public Long getCantidadProvincia() {
+		return cantidadProvincia;
+	}
+
+
+	public void setCantidadProvincia(Long cantidadProvincia) {
+		this.cantidadProvincia = cantidadProvincia;
+	}
+
+
+	public boolean isRequiereGeorreferencia() {
+		return requiereGeorreferencia;
+	}
+
+
+	public void setRequiereGeorreferencia(boolean requiereGeorreferencia) {
+		this.requiereGeorreferencia = requiereGeorreferencia;
+	}
+
+
+	public boolean isAutorizado() {
+		return autorizado;
+	}
+
+
+	public void setAutorizado(boolean autorizado) {
+		this.autorizado = autorizado;
+	}
+
+
+	public Long getPlazoId() {
+		return plazoId;
+	}
+
+
+	public void setPlazoId(Long plazoId) {
+		this.plazoId = plazoId;
+	}
+
+
+	public Map<String, Object> getPlazo() {
+		return plazo;
+	}
+
+
+	public void setPlazo(Map<String, Object> plazo) {
+		this.plazo = plazo;
+	}
+
+
+	public TipoDestino getTipoDestino() {
+		return tipoDestino;
+	}
+
+
+	public void setTipoDestino(TipoDestino tipoDestino) {
+		this.tipoDestino = tipoDestino;
+	}
+
+
+	public Long getBuzonId() {
+		return buzonId;
+	}
+
+
+	public void setBuzonId(Long buzonId) {
+		this.buzonId = buzonId;
+	}
+
+
+	public Map<String, Object> getBuzon() {
+		return buzon;
+	}
+
+
+	public void setBuzon(Map<String, Object> buzon) {
+		this.buzon = buzon;
+	}
+
+
+	public Long getTipoDocumentoId() {
+		return tipoDocumentoId;
+	}
+
+
+	public void setTipoDocumentoId(Long tipoDocumentoId) {
+		this.tipoDocumentoId = tipoDocumentoId;
+	}
+
+
+	public Map<String, Object> getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+
+	public void setTipoDocumento(Map<String, Object> tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
+
+
+	public String getRutaAutorizacion() {
+		return rutaAutorizacion;
+	}
+
+
+	public void setRutaAutorizacion(String rutaAutorizacion) {
+		this.rutaAutorizacion = rutaAutorizacion;
+	}
+
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+
+
+	public Long getProveedorId() {
+		return proveedorId;
+	}
+
+
+	public void setProveedorId(Long proveedorId) {
+		this.proveedorId = proveedorId;
+	}
+
+
+	public Map<String, Object> getProveedor() {
+		return proveedor;
+	}
+
+
+	public void setProveedor(Map<String, Object> proveedor) {
+		this.proveedor = proveedor;
+	}
+
+
+	public Set<ItemCampana> getItemsCampana() {
+		return itemsCampana;
+	}
+
+
+	public void setItemsCampana(Set<ItemCampana> itemsCampana) {
+		this.itemsCampana = itemsCampana;
+	}
+
+
+	public Set<SeguimientoCampana> getSeguimientosCampana() {
+		return seguimientosCampana;
+	}
+
+
+	public void setSeguimientosCampana(Set<SeguimientoCampana> seguimientosCampana) {
+		this.seguimientosCampana = seguimientosCampana;
+	}
+
 
 	/**
 	 * 

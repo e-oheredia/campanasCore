@@ -23,13 +23,28 @@ import javax.persistence.Table;
 public class Auspiciador implements Serializable {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="auspiciador_id")
 	private Long id;
 	@OneToOne
 	@MapsId
 	@JoinColumn(name="campana_id")
 	private Campana campana;
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Campana getCampana() {
+		return campana;
+	}
+
+	public void setCampana(Campana campana) {
+		this.campana = campana;
+	}
+
 	/**
 	 * 
 	 */

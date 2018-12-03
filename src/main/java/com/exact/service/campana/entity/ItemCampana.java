@@ -30,6 +30,47 @@ public class ItemCampana implements Serializable {
 	private String contactoDestino;
 	@Column(nullable = false)
 	private String direccion;
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getDistritoId() {
+		return distritoId;
+	}
+
+	public void setDistritoId(Long distritoId) {
+		this.distritoId = distritoId;
+	}
+
+	public Map<String, Object> getDistrito() {
+		return distrito;
+	}
+
+	public void setDistrito(Map<String, Object> distrito) {
+		this.distrito = distrito;
+	}
+
+	public String getContactoDestino() {
+		return contactoDestino;
+	}
+
+	public void setContactoDestino(String contactoDestino) {
+		this.contactoDestino = contactoDestino;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
 	/**
 	 * 
 	 */

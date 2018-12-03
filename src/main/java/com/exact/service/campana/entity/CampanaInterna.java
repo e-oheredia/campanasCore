@@ -18,6 +18,17 @@ public class CampanaInterna extends Campana {
 	@NotFound(action = NotFoundAction.IGNORE)
 	private TipoAgrupado tipoAgrupado;
 	
+	
+	public TipoAgrupado getTipoAgrupado() {
+		return tipoAgrupado;
+	}
+
+
+	public void setTipoAgrupado(TipoAgrupado tipoAgrupado) {
+		this.tipoAgrupado = tipoAgrupado;
+	}
+
+
 	/**
 	 * 
 	 */

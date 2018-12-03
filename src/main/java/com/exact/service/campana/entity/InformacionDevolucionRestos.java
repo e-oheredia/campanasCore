@@ -13,8 +13,32 @@ public class InformacionDevolucionRestos extends AccionRestosCampana {
 	private String contacto;
 	@Column(nullable=false)
 	private String direccion;
-	@Column(nullable=false)
 	private String observacion;
+	
+	public String getContacto() {
+		return contacto;
+	}
+
+	public void setContacto(String contacto) {
+		this.contacto = contacto;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+
 	/**
 	 * 
 	 */

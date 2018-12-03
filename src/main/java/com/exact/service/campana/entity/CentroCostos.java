@@ -26,6 +26,55 @@ public class CentroCostos implements Serializable {
 	private String grupoArticulo;
 	@Column(nullable=false)
 	private double porcentaje;
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getCuentaContableCodigo() {
+		return cuentaContableCodigo;
+	}
+
+	public void setCuentaContableCodigo(String cuentaContableCodigo) {
+		this.cuentaContableCodigo = cuentaContableCodigo;
+	}
+
+	public String getCentroCostosCodigo() {
+		return centroCostosCodigo;
+	}
+
+	public void setCentroCostosCodigo(String centroCostosCodigo) {
+		this.centroCostosCodigo = centroCostosCodigo;
+	}
+
+	public String getOrdenEstadistica() {
+		return ordenEstadistica;
+	}
+
+	public void setOrdenEstadistica(String ordenEstadistica) {
+		this.ordenEstadistica = ordenEstadistica;
+	}
+
+	public String getGrupoArticulo() {
+		return grupoArticulo;
+	}
+
+	public void setGrupoArticulo(String grupoArticulo) {
+		this.grupoArticulo = grupoArticulo;
+	}
+
+	public double getPorcentaje() {
+		return porcentaje;
+	}
+
+	public void setPorcentaje(double porcentaje) {
+		this.porcentaje = porcentaje;
+	}
+
 	/**
 	 * 
 	 */

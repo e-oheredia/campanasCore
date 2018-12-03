@@ -25,6 +25,17 @@ public class AccionRestosCampana implements Serializable {
 	@Column(name="accion_restos_campana_id")
 	private Long id;
 	
+	
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
 	/**
 	 * 
 	 */

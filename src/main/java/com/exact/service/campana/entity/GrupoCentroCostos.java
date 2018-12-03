@@ -15,6 +15,15 @@ public class GrupoCentroCostos extends Auspiciador {
 	@OneToMany
 	@JoinColumn(name="auspiciador_id")
 	private Set<CentroCostos> centrosCostos;
+	
+	public Set<CentroCostos> getCentrosCostos() {
+		return centrosCostos;
+	}
+
+	public void setCentrosCostos(Set<CentroCostos> centrosCostos) {
+		this.centrosCostos = centrosCostos;
+	}
+
 	/**
 	 * 
 	 */

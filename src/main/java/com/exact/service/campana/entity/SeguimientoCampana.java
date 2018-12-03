@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "seguimiento_campana")
 public class SeguimientoCampana implements Serializable {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "seguimiento_campana_id")
@@ -34,4 +35,44 @@ public class SeguimientoCampana implements Serializable {
 	@ManyToOne(optional=false, targetEntity= EstadoCampana.class)
 	@JoinColumn(name="estado_campana_id")
 	private EstadoCampana estadoCampana;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getObservacion() {
+		return observacion;
+	}
+	public void setObservacion(String observacion) {
+		this.observacion = observacion;
+	}
+	public Date getFecha() {
+		return fecha;
+	}
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	public Long getUsuarioId() {
+		return usuarioId;
+	}
+	public void setUsuarioId(Long usuarioId) {
+		this.usuarioId = usuarioId;
+	}
+	public Map<String, Object> getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Map<String, Object> usuario) {
+		this.usuario = usuario;
+	}
+	public EstadoCampana getEstadoCampana() {
+		return estadoCampana;
+	}
+	public void setEstadoCampana(EstadoCampana estadoCampana) {
+		this.estadoCampana = estadoCampana;
+	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }

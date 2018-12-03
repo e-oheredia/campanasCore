@@ -30,6 +30,47 @@ public class PaqueteHabilitadoCampana implements Serializable {
 	@Transient
 	private Map<String, Object> paqueteHabilitado;
 	
+	
+	public Long getId() {
+		return id;
+	}
+
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public Campana getCampana() {
+		return campana;
+	}
+
+
+	public void setCampana(Campana campana) {
+		this.campana = campana;
+	}
+
+
+	public Long getPaqueteHabilitadoId() {
+		return paqueteHabilitadoId;
+	}
+
+
+	public void setPaqueteHabilitadoId(Long paqueteHabilitadoId) {
+		this.paqueteHabilitadoId = paqueteHabilitadoId;
+	}
+
+
+	public Map<String, Object> getPaqueteHabilitado() {
+		return paqueteHabilitado;
+	}
+
+
+	public void setPaqueteHabilitado(Map<String, Object> paqueteHabilitado) {
+		this.paqueteHabilitado = paqueteHabilitado;
+	}
+
+
 	/**
 	 * 
 	 */

@@ -18,4 +18,10 @@ public class AccionRestosCampanaProveedor extends AccionRestosCampana {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public AccionRestosProveedor getAccionRestosProveedor() {
+		return accionRestosProveedor;
+	}
+	public void setAccionRestosProveedor(AccionRestosProveedor accionRestosProveedor) {
+		this.accionRestosProveedor = accionRestosProveedor;
+	}
 }
