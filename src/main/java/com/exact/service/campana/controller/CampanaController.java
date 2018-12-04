@@ -13,7 +13,7 @@ import com.exact.service.campana.entity.Campana;
 import com.exact.service.campana.service.interfaces.ICampanaService;
 
 @RestController
-@RequestMapping("campanas")
+@RequestMapping("/campanas")
 public class CampanaController {
 	@Autowired
 	ICampanaService campanaService;
