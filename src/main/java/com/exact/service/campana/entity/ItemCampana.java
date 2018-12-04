@@ -26,11 +26,60 @@ public class ItemCampana implements Serializable {
 	private Long distritoId;
 	@Transient
 	private Map<String, Object> distrito;
-	@Column(name = "contacto_destino")
-	private String contactoDestino;
+	@Column(name = "nombres", nullable = false)
+	private String nombres;
+	@Column(name = "apellido_paterno", nullable = false)
+	private String apellidoPaterno;
+	@Column(name = "apellido_materno", nullable = false)
+	private String apellidoMaterno;
 	@Column(nullable = false)
 	private String direccion;
+	@Column(name="razon_social", nullable=true)
+	private String razonSocial;
+	@Column(name="enviable", nullable=false)
+	private boolean enviable;
 	
+	
+	public boolean isEnviable() {
+		return enviable;
+	}
+
+	public void setEnviable(boolean enviable) {
+		this.enviable = enviable;
+	}
+
+	public String getNombres() {
+		return nombres;
+	}
+
+	public void setNombres(String nombres) {
+		this.nombres = nombres;
+	}
+
+	public String getApellidoPaterno() {
+		return apellidoPaterno;
+	}
+
+	public void setApellidoPaterno(String apellidoPaterno) {
+		this.apellidoPaterno = apellidoPaterno;
+	}
+
+	public String getApellidoMaterno() {
+		return apellidoMaterno;
+	}
+
+	public void setApellidoMaterno(String apellidoMaterno) {
+		this.apellidoMaterno = apellidoMaterno;
+	}
+
+	public String getRazonSocial() {
+		return razonSocial;
+	}
+
+	public void setRazonSocial(String razonSocial) {
+		this.razonSocial = razonSocial;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -53,14 +102,6 @@ public class ItemCampana implements Serializable {
 
 	public void setDistrito(Map<String, Object> distrito) {
 		this.distrito = distrito;
-	}
-
-	public String getContactoDestino() {
-		return contactoDestino;
-	}
-
-	public void setContactoDestino(String contactoDestino) {
-		this.contactoDestino = contactoDestino;
 	}
 
 	public String getDireccion() {

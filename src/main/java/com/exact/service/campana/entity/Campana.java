@@ -56,7 +56,7 @@ public class Campana implements Serializable {
 	@Transient
 	private Map<String, Object> plazo;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "tipo_destino_id")
 	private TipoDestino tipoDestino;
 
@@ -83,13 +83,16 @@ public class Campana implements Serializable {
 	@Transient
 	private Map<String, Object> proveedor;
 	
-	@OneToOne(mappedBy = "campana", cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="accion_restos_cargos_campana_id")
 	private AccionRestosCargosCampana accionRestosCargosCampana;
 	
-	@OneToOne(mappedBy = "campana", cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="accion_restos_rezagos_campana_id")
 	private AccionRestosRezagosCampana accionRestosRezagosCampana;
 	
-	@OneToOne(mappedBy = "campana", cascade=CascadeType.ALL)
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="auspiciador_id")
 	private Auspiciador auspiciador;
 	
 	@OneToMany(cascade=CascadeType.ALL)
@@ -100,6 +103,60 @@ public class Campana implements Serializable {
 	@JoinColumn(name="campana_id")
 	private Set<SeguimientoCampana> seguimientosCampana;
 	
+	@ManyToOne
+	@JoinColumn(name = "tipo_agrupado_id", nullable=true)
+	private TipoAgrupado tipoAgrupado;
+	
+	@ManyToOne
+	@JoinColumn(name = "proveedor_impresion_id", nullable=true)
+	private ProveedorImpresion proveedorImpresion;
+	
+	@Column(name = "paquete_habilitado_id", nullable=true)
+	private Long paqueteHabilitadoId;
+	
+	@Transient
+	private Map<String, Object> paqueteHabilitado;
+	
+
+	public TipoAgrupado getTipoAgrupado() {
+		return tipoAgrupado;
+	}
+
+
+	public void setTipoAgrupado(TipoAgrupado tipoAgrupado) {
+		this.tipoAgrupado = tipoAgrupado;
+	}
+
+
+	public AccionRestosCargosCampana getAccionRestosCargosCampana() {
+		return accionRestosCargosCampana;
+	}
+
+
+	public void setAccionRestosCargosCampana(AccionRestosCargosCampana accionRestosCargosCampana) {
+		this.accionRestosCargosCampana = accionRestosCargosCampana;
+	}
+
+
+	public AccionRestosRezagosCampana getAccionRestosRezagosCampana() {		
+		return accionRestosRezagosCampana;
+	}
+
+
+	public void setAccionRestosRezagosCampana(AccionRestosRezagosCampana accionRestosRezagosCampana) {
+		this.accionRestosRezagosCampana = accionRestosRezagosCampana;
+	}
+
+
+	public Auspiciador getAuspiciador() {
+		return auspiciador;
+	}
+
+
+	public void setAuspiciador(Auspiciador auspiciador) {
+		this.auspiciador = auspiciador;
+	}
+
 
 	public Long getId() {
 		return id;

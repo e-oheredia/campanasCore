@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 public class ProveedorImpresion implements Serializable {
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="proveedor_impresion_id")
 	private Long id;
 	@Column(nullable=false)
 	private String nombre;
@@ -26,17 +30,7 @@ public class ProveedorImpresion implements Serializable {
 	private String contacto;
 	@Column(nullable=false)
 	private Date fechaRecojo;
-	@OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name="campana_id")
-	private Campana campana;
 	
-	public Campana getCampana() {
-		return campana;
-	}
-	public void setCampana(Campana campana) {
-		this.campana = campana;
-	}
 	public Long getId() {
 		return id;
 	}

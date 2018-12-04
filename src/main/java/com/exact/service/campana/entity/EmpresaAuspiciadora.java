@@ -15,8 +15,20 @@ public class EmpresaAuspiciadora extends Auspiciador {
 	@Column(name="razon_social",nullable=false)
 	private String razonSocial;
 	@Column(nullable=false)
-	private String ruc;
+	private String ruc;	
 	
+	public EmpresaAuspiciadora() {
+		
+	}
+
+	public EmpresaAuspiciadora(String contacto, String direccion, String razonSocial, String ruc) {
+		
+		this.contacto = contacto;
+		this.direccion = direccion;
+		this.razonSocial = razonSocial;
+		this.ruc = ruc;
+	}
+
 	public String getContacto() {
 		return contacto;
 	}

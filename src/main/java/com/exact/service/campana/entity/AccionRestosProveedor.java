@@ -21,6 +21,8 @@ public class AccionRestosProveedor implements Serializable {
 	@Column(nullable=false)
 	private String nombre;
 	
+	
+	
 	public Long getId() {
 		return id;
 	}

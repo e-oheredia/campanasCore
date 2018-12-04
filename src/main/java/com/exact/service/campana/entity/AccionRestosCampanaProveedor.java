@@ -1,5 +1,6 @@
 package com.exact.service.campana.entity;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,6 +15,15 @@ public class AccionRestosCampanaProveedor extends AccionRestosCampana {
 	@ManyToOne
 	@JoinColumn(name="accion_restos_proveedor_id")
 	private AccionRestosProveedor accionRestosProveedor;
+	
+	public AccionRestosCampanaProveedor() {
+		
+	}
+	
+	public AccionRestosCampanaProveedor(AccionRestosProveedor accionRestosProveedor) {
+		this.accionRestosProveedor = accionRestosProveedor;
+	}
+	
 	/**
 	 * 
 	 */

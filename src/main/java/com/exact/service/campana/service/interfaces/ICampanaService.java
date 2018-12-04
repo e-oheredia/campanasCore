@@ -4,4 +4,5 @@ import com.exact.service.campana.entity.Campana;
 
 public interface ICampanaService {
 	Campana guardar(Campana campana);
+	Iterable<Campana> listarAll();
 }
