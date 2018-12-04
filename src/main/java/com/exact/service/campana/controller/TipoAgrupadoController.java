@@ -15,7 +15,7 @@ import com.exact.service.campana.entity.TipoAgrupado;
 import com.exact.service.campana.service.interfaces.ITipoAgrupadoService;
 
 @RestController
-@RequestMapping("/tipoagrupados")
+@RequestMapping("/tiposagrupado")
 public class TipoAgrupadoController {
 
 	@Autowired

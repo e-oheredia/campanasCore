@@ -15,7 +15,7 @@ import com.exact.service.campana.entity.TipoDestino;
 import com.exact.service.campana.service.interfaces.ITipoDestinoService;
 
 @RestController
-@RequestMapping("/tipodestinos")
+@RequestMapping("/tiposdestino")
 public class TipoDestinoController {
 	
 	@Autowired

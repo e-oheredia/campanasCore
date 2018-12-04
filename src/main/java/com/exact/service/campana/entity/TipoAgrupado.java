@@ -1,5 +1,7 @@
 package com.exact.service.campana.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +11,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tipo_agrupado")
-public class TipoAgrupado {
+public class TipoAgrupado implements Serializable {
+
+	
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -35,5 +39,8 @@ public class TipoAgrupado {
 		this.nombre = nombre;
 	}
 	
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }
