@@ -10,3 +10,4 @@ INSERT INTO [dbo].[tipo_agrupado]([tipo_agrupado_id],[nombre]) VALUES(3,'POR SUC
 SET IDENTITY_INSERT [dbo].[tipo_agrupado] OFF
 
 insert into estado_campana(nombre) values('CREADO')
+
