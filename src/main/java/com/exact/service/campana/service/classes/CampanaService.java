@@ -1,5 +1,9 @@
 package com.exact.service.campana.service.classes;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -80,5 +84,23 @@ public class CampanaService implements ICampanaService {
 
 		return campanaDao.save(campana);
 	}
+
+
+
+	@Override
+	public Iterable<Campana> listarCampanasPorEstado(Long estadoId) {
+		
+		Iterable<Campana> campanasCreadas = campanaDao.listarCampanasPorEstado(estadoId);
+		List<Campana> campanasCread = StreamSupport.stream(campanasCreadas.spliterator(), false).collect(Collectors.toList());
+		
+		if(campanasCread==null) {
+			return null;
+		}
+				
+		return campanasCread;
+	}
+
+	
+
 
 }
