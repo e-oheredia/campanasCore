@@ -104,7 +104,7 @@ public class CommonUtils {
 		        Map.Entry pair = (Map.Entry)it.next();
 		        filterProvider.addFilter(pair.getKey().toString() , SimpleBeanPropertyFilter.serializeAllExcept(pair.getValue().toString()));
 		     }
-		//filterProvider.addFilter(nombreFiltro, SimpleBeanPropertyFilter.serializeAllExcept(campoFiltro)); 		
+			
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		mapper.setFilterProvider(filterProvider); 		
 	    return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(lista);
@@ -119,7 +119,7 @@ public class CommonUtils {
 		        Map.Entry pair = (Map.Entry)it.next();
 		        filterProvider.addFilter(pair.getKey().toString() , SimpleBeanPropertyFilter.serializeAllExcept(pair.getValue().toString()));
 		     }
-		//filterProvider.addFilter(filtro.ke , SimpleBeanPropertyFilter.serializeAllExcept(filtro.get("envioFilter"))); 
+		
 		
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		mapper.setFilterProvider(filterProvider); 		
