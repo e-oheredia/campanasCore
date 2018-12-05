@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -35,6 +36,19 @@ public class SeguimientoCampana implements Serializable {
 	@ManyToOne(optional=false, targetEntity= EstadoCampana.class)
 	@JoinColumn(name="estado_campana_id")
 	private EstadoCampana estadoCampana;
+	
+	public SeguimientoCampana(String observacion, Long usuarioId, EstadoCampana estadoCampana) {
+		super();
+		this.observacion = observacion;
+		this.usuarioId = usuarioId;
+		this.estadoCampana = estadoCampana;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		this.fecha = new Date();
+	}
+	
 	public Long getId() {
 		return id;
 	}

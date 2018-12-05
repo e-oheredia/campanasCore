@@ -1,8 +1,11 @@
 package com.exact.service.campana.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,12 +22,10 @@ public class CampanaController {
 	ICampanaService campanaService;
 
 	@PostMapping
-	public ResponseEntity<Campana> guardar(@RequestBody Campana campana) {
-		return new ResponseEntity<Campana>(campanaService.guardar(campana), HttpStatus.OK);
-	}
-	
-	@GetMapping
-	public ResponseEntity<Iterable<Campana>> listarAll(){
-		return new ResponseEntity<Iterable<Campana>>(campanaService.listarAll(), HttpStatus.OK);
+	public ResponseEntity<Campana> guardar(@RequestBody Campana campana, Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		return new ResponseEntity<Campana>(campanaService.guardar(campana, usuarioId), HttpStatus.OK);
 	}
 }
