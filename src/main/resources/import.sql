@@ -9,3 +9,5 @@ INSERT INTO [dbo].[tipo_agrupado]([tipo_agrupado_id],[nombre]) VALUES(2,'POR UNI
 INSERT INTO [dbo].[tipo_agrupado]([tipo_agrupado_id],[nombre]) VALUES(3,'POR SUCURSAL - SEDE')
 SET IDENTITY_INSERT [dbo].[tipo_agrupado] OFF
 
+insert into estado_campana(nombre) values('CREADO')
+

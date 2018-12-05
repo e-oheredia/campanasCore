@@ -1,6 +1,7 @@
 package com.exact.service.campana.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,8 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -20,8 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "campana")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "campana") 
 public class Campana implements Serializable {
 
 	@Id
@@ -117,6 +115,45 @@ public class Campana implements Serializable {
 	@Transient
 	private Map<String, Object> paqueteHabilitado;
 	
+	public Campana() {
+		seguimientosCampana = new HashSet<SeguimientoCampana>();
+	}
+	
+	public void addSeguimientoCampana(SeguimientoCampana seguimientoCampana) {
+		seguimientosCampana.add(seguimientoCampana);
+	}
+	
+
+	public ProveedorImpresion getProveedorImpresion() {
+		return proveedorImpresion;
+	}
+
+
+	public void setProveedorImpresion(ProveedorImpresion proveedorImpresion) {
+		this.proveedorImpresion = proveedorImpresion;
+	}
+
+
+	public Long getPaqueteHabilitadoId() {
+		return paqueteHabilitadoId;
+	}
+
+
+	public void setPaqueteHabilitadoId(Long paqueteHabilitadoId) {
+		this.paqueteHabilitadoId = paqueteHabilitadoId;
+	}
+
+
+	public Map<String, Object> getPaqueteHabilitado() {
+		return paqueteHabilitado;
+	}
+
+
+	public void setPaqueteHabilitado(Map<String, Object> paqueteHabilitado) {
+		this.paqueteHabilitado = paqueteHabilitado;
+		this.paqueteHabilitadoId = Long.valueOf(paqueteHabilitado.get("id").toString());
+	}
+
 
 	public TipoAgrupado getTipoAgrupado() {
 		return tipoAgrupado;
@@ -255,6 +292,7 @@ public class Campana implements Serializable {
 
 	public void setPlazo(Map<String, Object> plazo) {
 		this.plazo = plazo;
+		this.plazoId = Long.valueOf(plazo.get("id").toString());
 	}
 
 
@@ -285,6 +323,7 @@ public class Campana implements Serializable {
 
 	public void setBuzon(Map<String, Object> buzon) {
 		this.buzon = buzon;
+		this.buzonId = Long.valueOf(buzon.get("id").toString());
 	}
 
 
@@ -295,6 +334,7 @@ public class Campana implements Serializable {
 
 	public void setTipoDocumentoId(Long tipoDocumentoId) {
 		this.tipoDocumentoId = tipoDocumentoId;
+		
 	}
 
 
@@ -305,6 +345,7 @@ public class Campana implements Serializable {
 
 	public void setTipoDocumento(Map<String, Object> tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
+		this.tipoDocumentoId = Long.valueOf(tipoDocumento.get("id").toString());
 	}
 
 
@@ -345,6 +386,7 @@ public class Campana implements Serializable {
 
 	public void setProveedor(Map<String, Object> proveedor) {
 		this.proveedor = proveedor;
+		this.proveedorId = Long.valueOf(proveedor.get("id").toString());
 	}
 
 
