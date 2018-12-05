@@ -102,6 +102,7 @@ public class ItemCampana implements Serializable {
 
 	public void setDistrito(Map<String, Object> distrito) {
 		this.distrito = distrito;
+		this.distritoId = Long.valueOf(distrito.get("id").toString());
 	}
 
 	public String getDireccion() {

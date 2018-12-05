@@ -12,12 +12,21 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "estado_campana")
 public class EstadoCampana implements Serializable {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "estado_campana_id")
 	private Long id;
 	@Column(nullable=false)
-	private String nombre;
+	private String nombre;	
+	
+	public EstadoCampana() {
+		super();
+	}
+	public EstadoCampana(Long id) {
+		super();
+		this.id = id;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -30,5 +39,8 @@ public class EstadoCampana implements Serializable {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 }

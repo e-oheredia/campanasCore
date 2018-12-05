@@ -8,7 +8,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="informacion_devolucion_restos")
-@DiscriminatorValue("IDR")
 public class InformacionDevolucionRestos extends AccionRestosCampana {
 	
 	@Column(nullable=false)

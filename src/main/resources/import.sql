@@ -9,6 +9,7 @@ INSERT INTO [dbo].[tipo_agrupado]([tipo_agrupado_id],[nombre]) VALUES(2,'POR UNI
 INSERT INTO [dbo].[tipo_agrupado]([tipo_agrupado_id],[nombre]) VALUES(3,'POR SUCURSAL - SEDE')
 SET IDENTITY_INSERT [dbo].[tipo_agrupado] OFF
 
+
 INSERT INTO estado_campana(nombre) VALUES ('CREADO')
 INSERT INTO estado_campana(nombre) VALUES ('ASIGNADA')
 INSERT INTO estado_campana(nombre) VALUES ('GEOREFERENCIADA')
@@ -47,8 +48,7 @@ INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observac
 INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (3, GETDATE(), NULL,1,3,2)
 INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (4, GETDATE(), NULL,1,4,6)
 INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (5, GETDATE(), NULL,1,5,5)
-
-
+SET IDENTITY_INSERT [dbo].[seguimiento_campana] OFF
 
       
 		
@@ -70,4 +70,5 @@ INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observac
       
       
      
+
 

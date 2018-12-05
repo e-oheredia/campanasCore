@@ -14,6 +14,8 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 @Table(name="proveedor_impresion")
 public class ProveedorImpresion implements Serializable {
@@ -29,6 +31,8 @@ public class ProveedorImpresion implements Serializable {
 	@Column(nullable=false)
 	private String contacto;
 	@Column(nullable=false)
+	@JsonFormat
+    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone="America/Lima")
 	private Date fechaRecojo;
 	
 	public Long getId() {
