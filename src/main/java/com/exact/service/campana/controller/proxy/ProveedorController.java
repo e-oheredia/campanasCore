@@ -9,26 +9,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/plazos")
-public class PlazoController {
+@RequestMapping("/proveedores")
+public class ProveedorController {
 	
-	@Value("${service.plazos}")
-	String servicePlazosUrl;
+	@Value("${service.proveedor}")
+	String serviceProveedorUrl;
 	
 	RestTemplate restTemplate;
 	
-	public PlazoController() {
+	public ProveedorController() {
 		restTemplate = new RestTemplate();
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<String> listarAll(){
-		return restTemplate.getForEntity(servicePlazosUrl + "/plazos", String.class);
+		return restTemplate.getForEntity(serviceProveedorUrl + "/proveedores", String.class);
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<String> listarById(@PathVariable Long id){
-		return restTemplate.getForEntity(servicePlazosUrl + "/plazos/" + id, String.class);
+		return restTemplate.getForEntity(serviceProveedorUrl + "/proveedores/" + id, String.class);
 	}
-	
 }
