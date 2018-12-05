@@ -9,7 +9,11 @@ import org.json.JSONException;
 import com.exact.service.campana.entity.Campana;
 
 public interface ICampanaService {
-	Campana guardar(Campana campana);
-	Iterable<Campana> listarAll();
+
 	Campana campanaById(Long id) throws ClientProtocolException, IOException, JSONException;
+	
+	Iterable<Campana> listarCampanasPorEstado(Long estadoId);
+
+	Campana guardar(Campana campana, Long usuarioId);
+
 }
