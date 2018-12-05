@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "seguimiento_campana")
@@ -35,6 +36,12 @@ public class SeguimientoCampana implements Serializable {
 	@ManyToOne(optional=false, targetEntity= EstadoCampana.class)
 	@JoinColumn(name="estado_campana_id")
 	private EstadoCampana estadoCampana;
+		
+	@ManyToOne(optional = false)
+	@JoinColumn(name="campana_id")
+	@JsonIgnore
+	private Campana campana;
+	
 	public Long getId() {
 		return id;
 	}
