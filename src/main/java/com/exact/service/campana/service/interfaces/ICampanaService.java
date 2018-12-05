@@ -12,7 +12,7 @@ public interface ICampanaService {
 
 	Campana campanaById(Long id) throws ClientProtocolException, IOException, JSONException;
 	
-	Iterable<Campana> listarCampanasPorEstado(Long estadoId);
+	Iterable<Campana> listarCampanasPorEstado(Long estadoId) throws ClientProtocolException, IOException, JSONException;
 
 	Campana guardar(Campana campana, Long usuarioId);
 

@@ -34,15 +34,13 @@ import com.exact.service.campana.service.interfaces.ICampanaService;
 public class CampanaController {
 	@Autowired	
 	ICampanaService campanaService;
-
 	
 	@GetMapping
-	public ResponseEntity<Iterable<Campana>> listarCampanasPorEstado(@RequestParam Long estadoId){
+	public ResponseEntity<Iterable<Campana>> listarCampanasPorEstado(@RequestParam Long estadoId) throws ClientProtocolException, IOException, JSONException{
 		
-		Iterable<Campana> campanasC = campanaService.listarCampanasPorEstado(estadoId);
-		List<Campana> campanasCread = StreamSupport.stream(campanasC.spliterator(), false).collect(Collectors.toList());
-					
-		return new ResponseEntity<Iterable<Campana>>(campanasC, HttpStatus.OK);
+		Iterable<Campana> campanas = campanaService.listarCampanasPorEstado(estadoId);
+						
+		return new ResponseEntity<Iterable<Campana>>(campanas, HttpStatus.OK);
 		
 	}			
 		
