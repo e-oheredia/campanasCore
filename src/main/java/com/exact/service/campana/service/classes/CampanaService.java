@@ -81,4 +81,19 @@ public class CampanaService implements ICampanaService {
 		return campanaDao.save(campana);
 	}
 
+	@Override
+	public Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.setProveedor(campana.getProveedor());
+		campanaBD.setCostoCampana(campana.getCostoCampana());
+		campanaBD.setTipoCampana(campana.getTipoCampana());
+		campanaBD.addSeguimientoCampana(
+				new SeguimientoCampana("Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
+						.concat(". Costo: ").concat(String.valueOf(campana.getCostoCampana())), usuarioId, 
+						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
+		
+		return campanaDao.save(campana);
+
+	}
+
 }

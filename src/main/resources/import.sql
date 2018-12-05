@@ -11,3 +11,6 @@ SET IDENTITY_INSERT [dbo].[tipo_agrupado] OFF
 
 insert into estado_campana(nombre) values('CREADO')
 
+insert into tipo_campana(nombre) values('SENSIBLE')
+insert into tipo_campana(nombre) values('NO SENSIBLE')
+

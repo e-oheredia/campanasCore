@@ -1,7 +1,7 @@
 package com.exact.service.campana.enumerator;
 
 public enum EstadoCampanaEnum {
-	CREADO(1);
+	CREADO(1), ASIGNADO(2);
 		
 	private final int value;
     private EstadoCampanaEnum(int value) {
