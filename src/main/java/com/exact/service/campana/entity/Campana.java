@@ -75,7 +75,7 @@ public class Campana implements Serializable {
 
 	private String observacion;
 
-	@Column(name = "proveedor_id")
+	@Column(name = "proveedor_id", nullable=true)
 	private Long proveedorId;
 
 	@Transient
@@ -109,6 +109,13 @@ public class Campana implements Serializable {
 	@JoinColumn(name = "proveedor_impresion_id", nullable=true)
 	private ProveedorImpresion proveedorImpresion;
 	
+	@ManyToOne
+	@JoinColumn(name = "tipo_campana", nullable=true)
+	private TipoCampana tipoCampana;
+	
+	@Column(name = "costo_campana")
+	private double costoCampana;
+	
 	@Column(name = "paquete_habilitado_id", nullable=true)
 	private Long paqueteHabilitadoId;
 	
@@ -117,8 +124,30 @@ public class Campana implements Serializable {
 	
 	public Campana() {
 		seguimientosCampana = new HashSet<SeguimientoCampana>();
-	}
+	}	
 	
+	public TipoCampana getTipoCampana() {
+		return tipoCampana;
+	}
+
+	public void setTipoCampana(TipoCampana tipoCampana) {
+		this.tipoCampana = tipoCampana;
+	}
+
+
+
+	public double getCostoCampana() {
+		return costoCampana;
+	}
+
+
+
+	public void setCostoCampana(double costoCampana) {
+		this.costoCampana = costoCampana;
+	}
+
+
+
 	public void addSeguimientoCampana(SeguimientoCampana seguimientoCampana) {
 		seguimientosCampana.add(seguimientoCampana);
 	}
