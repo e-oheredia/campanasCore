@@ -18,6 +18,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 @Entity
 @Table(name = "campana") 
 public class Campana implements Serializable {
@@ -49,6 +53,7 @@ public class Campana implements Serializable {
 	private boolean autorizado;
 
 	@Column(name = "plazo_id", nullable = false)
+	@JsonIgnore
 	private Long plazoId;
 
 	@Transient
@@ -59,12 +64,14 @@ public class Campana implements Serializable {
 	private TipoDestino tipoDestino;
 
 	@Column(name = "buzon_id", nullable = false)
+	@JsonIgnore
 	private Long buzonId;
 
 	@Transient
 	private Map<String, Object> buzon;
 
 	@Column(name = "tipo_documento_id", nullable = false)
+	@JsonIgnore
 	private Long tipoDocumentoId;
 
 	@Transient
@@ -76,6 +83,7 @@ public class Campana implements Serializable {
 	private String observacion;
 
 	@Column(name = "proveedor_id", nullable=true)
+	@JsonIgnore
 	private Long proveedorId;
 
 	@Transient
@@ -113,13 +121,16 @@ public class Campana implements Serializable {
 	@JoinColumn(name = "tipo_campana", nullable=true)
 	private TipoCampana tipoCampana;
 	
-	@Column(name = "costo_campana")
-	private double costoCampana;
+	
+	@Column(name = "costo_campana", nullable=true)
+	private Double costoCampana;
 	
 	@Column(name = "paquete_habilitado_id", nullable=true)
+	@JsonIgnore
 	private Long paqueteHabilitadoId;
 	
 	@Transient
+	@JsonInclude(value=Include.	NON_NULL)
 	private Map<String, Object> paqueteHabilitado;
 	
 	public Campana() {
@@ -134,21 +145,16 @@ public class Campana implements Serializable {
 		this.tipoCampana = tipoCampana;
 	}
 
-
-
-	public double getCostoCampana() {
+	public Double getCostoCampana() {
 		return costoCampana;
 	}
 
-
-
-	public void setCostoCampana(double costoCampana) {
+	public void setCostoCampana(Double costoCampana) {
 		this.costoCampana = costoCampana;
 	}
 
-
-
 	public void addSeguimientoCampana(SeguimientoCampana seguimientoCampana) {
+		seguimientoCampana.setCampana(this);
 		seguimientosCampana.add(seguimientoCampana);
 	}
 	

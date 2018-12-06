@@ -98,7 +98,7 @@ public class CommonUtils {
 		ObjectMapper mapper = new ObjectMapper();		
 		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
 		
-		Iterator it = filtro.entrySet().iterator();
+		Iterator<?> it = filtro.entrySet().iterator();
 		
 		 while (it.hasNext()) {
 		        Map.Entry pair = (Map.Entry)it.next();
@@ -113,7 +113,7 @@ public class CommonUtils {
 	public String filterObjetoJson(Object objeto,Map<String, String> filtro) throws ClientProtocolException, IOException, JSONException{
 		ObjectMapper mapper = new ObjectMapper();	
 		SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-		Iterator it = filtro.entrySet().iterator();
+		Iterator<?> it = filtro.entrySet().iterator();
 		
 		 while (it.hasNext()) {
 		        Map.Entry pair = (Map.Entry)it.next();

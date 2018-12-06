@@ -1,17 +1,11 @@
 package com.exact.service.campana.controller;
 
-
-
 import java.io.IOException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
-
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,23 +22,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.exact.service.campana.entity.Campana;
 import com.exact.service.campana.service.interfaces.ICampanaService;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 @RestController
-@RequestMapping("/campanas")
+@RequestMapping("campanas")
 public class CampanaController {
-	@Autowired	
+	@Autowired
 	ICampanaService campanaService;
-	
+
 	@GetMapping
-	public ResponseEntity<Iterable<Campana>> listarCampanasPorEstado(@RequestParam Long estadoId) throws ClientProtocolException, IOException, JSONException{
+	public ResponseEntity<String> listarCampanasPorEstado(@RequestParam Long estadoId) throws ClientProtocolException, IOException, JSONException{
 		
 		Iterable<Campana> campanas = campanaService.listarCampanasPorEstado(estadoId);
-						
-		return new ResponseEntity<Iterable<Campana>>(campanas, HttpStatus.OK);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);
 		
-	}			
-		
+	}
+
 	@PostMapping
 	public ResponseEntity<Campana> guardar(@RequestBody Campana campana, Authentication authentication) {
 		@SuppressWarnings("unchecked")
@@ -52,10 +49,22 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.guardar(campana, usuarioId), HttpStatus.OK);
 
 	}
-	
+
+	@PutMapping("{id}/seleccionproveedor")
+	public ResponseEntity<Campana> seleccionarProveedor(@PathVariable Long id, @RequestBody Campana campana,
+			Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		return new ResponseEntity<Campana>(campanaService.seleccionarProveedor(id, campana, usuarioId), HttpStatus.OK);
+	}
+
 	@GetMapping("/{id}")
-	public ResponseEntity<Campana> listarById(@PathVariable Long id) throws ClientProtocolException, IOException, JSONException{
-		Campana campana = campanaService.campanaById(id);		
-		return new ResponseEntity<Campana>(campana, campana == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
+	public ResponseEntity<String> listarById(@PathVariable Long id)
+			throws ClientProtocolException, IOException, JSONException {
+		Campana campana = campanaService.campanaById(id);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campana), campana == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
 	}
 }

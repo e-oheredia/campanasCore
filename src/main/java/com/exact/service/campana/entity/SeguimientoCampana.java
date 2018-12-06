@@ -43,6 +43,15 @@ public class SeguimientoCampana implements Serializable {
 	@JsonIgnore
 	private Campana campana;
 	
+	
+	public Campana getCampana() {
+		return campana;
+	}
+
+	public void setCampana(Campana campana) {
+		this.campana = campana;
+	}
+
 	public SeguimientoCampana(String observacion, Long usuarioId, EstadoCampana estadoCampana) {
 		super();
 		this.observacion = observacion;

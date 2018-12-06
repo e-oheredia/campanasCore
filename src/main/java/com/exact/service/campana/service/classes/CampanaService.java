@@ -6,8 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 import com.exact.service.campana.controller.proxy.BuzonController;
+import com.exact.service.campana.controller.proxy.DistritoController;
 import com.exact.service.campana.controller.proxy.TipoDocumentoController;
 import com.exact.service.campana.controller.proxy.PlazoController;
 import com.exact.service.campana.controller.proxy.ProveedorController;
@@ -33,6 +36,7 @@ import com.exact.service.campana.entity.EmpresaAuspiciadora;
 import com.exact.service.campana.entity.EstadoCampana;
 import com.exact.service.campana.entity.GrupoCentroCostos;
 import com.exact.service.campana.entity.InformacionDevolucionRestos;
+import com.exact.service.campana.entity.ItemCampana;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -67,6 +71,9 @@ public class CampanaService implements ICampanaService {
 	
 	@Autowired
 	TipoDocumentoController tipoDocumentoController;
+	
+	@Autowired
+	DistritoController distritoController;
 
 	@Override
 	public Campana guardar(Campana campana, Long usuarioId) {
@@ -111,6 +118,21 @@ public class CampanaService implements ICampanaService {
 		return campanaDao.save(campana);
 	}
 
+	@Override
+	public Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.setProveedor(campana.getProveedor());
+		campanaBD.setCostoCampana(campana.getCostoCampana());
+		campanaBD.setTipoCampana(campana.getTipoCampana());
+		campanaBD.addSeguimientoCampana(
+				new SeguimientoCampana("Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
+						.concat(". Costo: ").concat(String.valueOf(campana.getCostoCampana())), usuarioId, 
+						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
+		
+		return campanaDao.save(campanaBD);
+
+	}
+
 
 
 	@Override
@@ -119,8 +141,27 @@ public class CampanaService implements ICampanaService {
 		Iterable<Campana> campanas = campanaDao.listarCampanasPorEstado(estadoId);
 		List<Campana> campanasList = StreamSupport.stream(campanas.spliterator(), false).collect(Collectors.toList());
 		
-		if(campanasList==null) {
+		if(campanasList == null) {
 			return null;
+		}		
+		
+		List<ItemCampana> itemsCampana = new ArrayList<ItemCampana>();
+		campanasList.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
+		
+		//Distritos
+		List<Long> distritoIds = itemsCampana.stream().map(ItemCampana::getDistritoId).collect(Collectors.toList());
+		JSONArray distritoJson = new JSONArray(distritoController.listarByIds(distritoIds).getBody().toString());		
+		List<Map<String, Object>> distritos = StreamSupport.stream(CommonUtils.jsonArrayToMap(distritoJson).spliterator(),false).collect(Collectors.toList());;
+		
+		for (ItemCampana itemCampana: itemsCampana) {
+			int i = 0;
+			while (i < distritos.size()) {
+				if (itemCampana.getDistritoId().longValue() == Long.valueOf(distritos.get(i).get("id").toString())) {
+					itemCampana.setDistrito(distritos.get(i));
+					break;
+				}
+				i++;
+			}
 		}
 		
 		//Buzones
@@ -128,13 +169,11 @@ public class CampanaService implements ICampanaService {
 		JSONArray buzonJson = new JSONArray(buzonController.listarByIds(buzonIds).getBody().toString());		
 		List<Map<String, Object>> buzones = StreamSupport.stream(CommonUtils.jsonArrayToMap(buzonJson).spliterator(),false).collect(Collectors.toList());;
 		
-		//Plazos
-		List<Long> plazoIds = campanasList.stream().map(Campana::getPlazoId).collect(Collectors.toList());		
+		//Plazos		
 		JSONArray plazoJson = new JSONArray(plazoController.listarAll().getBody().toString());		
 		List<Map<String, Object>> plazos = StreamSupport.stream(CommonUtils.jsonArrayToMap(plazoJson).spliterator(),false).collect(Collectors.toList());;
 		
-		//Proveedores
-		List<Long> proveedorIds = campanasList.stream().map(Campana::getProveedorId).collect(Collectors.toList());		
+		//Proveedores	
 		JSONArray proveedorJson = new JSONArray(proveedorController.listarAll().getBody().toString());		
 		List<Map<String, Object>> proveedores = StreamSupport.stream(CommonUtils.jsonArrayToMap(proveedorJson).spliterator(),false).collect(Collectors.toList());;
 			
@@ -203,18 +242,9 @@ public class CampanaService implements ICampanaService {
 			
 			JSONObject proveedorJson = new JSONObject(proveedorController.listarById(campana.getProveedorId()).getBody().toString());		
 			campana.setProveedor(CommonUtils.jsonToMap(proveedorJson));
-			/*
-			JSONObject tipoDocumentoJson = new JSONObject(tipoDocumentoController.listarById(campana.getTipoDocumentoId()).getBody().toString());		
-			campana.setTipoDocumento(CommonUtils.jsonToMap(tipoDocumentoJson));
-			*/
 		}
 		
 		return campana;
-		
-		//return campanaDao.findById(id).orElse(null);
 	}
-
-	
-
 
 }
