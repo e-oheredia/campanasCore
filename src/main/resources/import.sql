@@ -32,6 +32,13 @@ SET IDENTITY_INSERT [dbo].[accion_restos_rezagos_campana] ON
 INSERT INTO [dbo].[accion_restos_rezagos_campana] ([accion_restos_rezagos_campana_id],[accion_restos_campana_id]) VALUES (1,1)
 SET IDENTITY_INSERT [dbo].[accion_restos_rezagos_campana] OFF
 
+SET IDENTITY_INSERT [dbo].[accion_restos_proveedor] ON 
+INSERT INTO [dbo].[accion_restos_proveedor] ([accion_restos_proveedor_id],[nombre]) VALUES (1,'Que el proveedor los destruya')
+INSERT INTO [dbo].[accion_restos_proveedor] ([accion_restos_proveedor_id],[nombre]) VALUES (2,'Devolver a almacén')
+SET IDENTITY_INSERT [dbo].[accion_restos_proveedor] OFF
+
+
+
 SET IDENTITY_INSERT [dbo].[auspiciador] ON 
 INSERT INTO [dbo].[auspiciador] ([auspiciador_id]) VALUES (1)
 SET IDENTITY_INSERT [dbo].[auspiciador] OFF 
