@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 @RestController
-@RequestMapping("campanas")
+@RequestMapping("/campanas")
 public class CampanaController {
 	@Autowired
 	ICampanaService campanaService;
