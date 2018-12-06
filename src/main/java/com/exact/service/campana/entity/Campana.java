@@ -113,8 +113,9 @@ public class Campana implements Serializable {
 	@JoinColumn(name = "tipo_campana", nullable=true)
 	private TipoCampana tipoCampana;
 	
-	@Column(name = "costo_campana")
-	private double costoCampana;
+	
+	@Column(name = "costo_campana", nullable=true)
+	private Double costoCampana;
 	
 	@Column(name = "paquete_habilitado_id", nullable=true)
 	private Long paqueteHabilitadoId;
@@ -134,21 +135,16 @@ public class Campana implements Serializable {
 		this.tipoCampana = tipoCampana;
 	}
 
-
-
-	public double getCostoCampana() {
+	public Double getCostoCampana() {
 		return costoCampana;
 	}
 
-
-
-	public void setCostoCampana(double costoCampana) {
+	public void setCostoCampana(Double costoCampana) {
 		this.costoCampana = costoCampana;
 	}
 
-
-
 	public void addSeguimientoCampana(SeguimientoCampana seguimientoCampana) {
+		seguimientoCampana.setCampana(this);
 		seguimientosCampana.add(seguimientoCampana);
 	}
 	

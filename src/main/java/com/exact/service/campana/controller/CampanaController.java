@@ -1,13 +1,13 @@
 package com.exact.service.campana.controller;
 
 
-import java.util.List;
+
+import java.io.IOException;
+
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONException;
+
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,15 +30,13 @@ import com.exact.service.campana.service.interfaces.ICampanaService;
 public class CampanaController {
 	@Autowired	
 	ICampanaService campanaService;
-
 	
 	@GetMapping
-	public ResponseEntity<Iterable<Campana>> listarCampanasPorEstado(@RequestParam Long estadoId){
+	public ResponseEntity<Iterable<Campana>> listarCampanasPorEstado(@RequestParam Long estadoId) throws ClientProtocolException, IOException, JSONException{
 		
-		Iterable<Campana> campanasC = campanaService.listarCampanasPorEstado(estadoId);
-		List<Campana> campanasCread = StreamSupport.stream(campanasC.spliterator(), false).collect(Collectors.toList());
-					
-		return new ResponseEntity<Iterable<Campana>>(campanasC, HttpStatus.OK);
+		Iterable<Campana> campanas = campanaService.listarCampanasPorEstado(estadoId);
+						
+		return new ResponseEntity<Iterable<Campana>>(campanas, HttpStatus.OK);
 		
 	}			
 		
@@ -57,5 +55,11 @@ public class CampanaController {
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
 		return new ResponseEntity<Campana>(campanaService.seleccionarProveedor(id, campana, usuarioId), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Campana> listarById(@PathVariable Long id) throws ClientProtocolException, IOException, JSONException{
+		Campana campana = campanaService.campanaById(id);		
+		return new ResponseEntity<Campana>(campana, campana == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
 	}
 }
