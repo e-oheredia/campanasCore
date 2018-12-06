@@ -13,6 +13,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "item_campana")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -23,6 +25,7 @@ public class ItemCampana implements Serializable {
 	@Column(name = "item_campana_id")
 	private Long id;
 	@Column(name = "distrito_id", nullable = false)
+	@JsonIgnore
 	private Long distritoId;
 	@Transient
 	private Map<String, Object> distrito;

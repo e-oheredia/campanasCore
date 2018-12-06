@@ -6,8 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 import com.exact.service.campana.controller.proxy.BuzonController;
+import com.exact.service.campana.controller.proxy.DistritoController;
 import com.exact.service.campana.controller.proxy.TipoDocumentoController;
 import com.exact.service.campana.controller.proxy.PlazoController;
 import com.exact.service.campana.controller.proxy.ProveedorController;
@@ -33,6 +36,7 @@ import com.exact.service.campana.entity.EmpresaAuspiciadora;
 import com.exact.service.campana.entity.EstadoCampana;
 import com.exact.service.campana.entity.GrupoCentroCostos;
 import com.exact.service.campana.entity.InformacionDevolucionRestos;
+import com.exact.service.campana.entity.ItemCampana;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -67,6 +71,9 @@ public class CampanaService implements ICampanaService {
 	
 	@Autowired
 	TipoDocumentoController tipoDocumentoController;
+	
+	@Autowired
+	DistritoController distritoController;
 
 	@Override
 	public Campana guardar(Campana campana, Long usuarioId) {
@@ -122,7 +129,7 @@ public class CampanaService implements ICampanaService {
 						.concat(". Costo: ").concat(String.valueOf(campana.getCostoCampana())), usuarioId, 
 						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
 		
-		return campanaDao.save(campana);
+		return campanaDao.save(campanaBD);
 
 	}
 
@@ -134,8 +141,27 @@ public class CampanaService implements ICampanaService {
 		Iterable<Campana> campanas = campanaDao.listarCampanasPorEstado(estadoId);
 		List<Campana> campanasList = StreamSupport.stream(campanas.spliterator(), false).collect(Collectors.toList());
 		
-		if(campanasList==null) {
+		if(campanasList == null) {
 			return null;
+		}		
+		
+		List<ItemCampana> itemsCampana = new ArrayList<ItemCampana>();
+		campanasList.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
+		
+		//Distritos
+		List<Long> distritoIds = itemsCampana.stream().map(ItemCampana::getDistritoId).collect(Collectors.toList());
+		JSONArray distritoJson = new JSONArray(distritoController.listarByIds(distritoIds).getBody().toString());		
+		List<Map<String, Object>> distritos = StreamSupport.stream(CommonUtils.jsonArrayToMap(distritoJson).spliterator(),false).collect(Collectors.toList());;
+		
+		for (ItemCampana itemCampana: itemsCampana) {
+			int i = 0;
+			while (i < distritos.size()) {
+				if (itemCampana.getDistritoId().longValue() == Long.valueOf(distritos.get(i).get("id").toString())) {
+					itemCampana.setDistrito(distritos.get(i));
+					break;
+				}
+				i++;
+			}
 		}
 		
 		//Buzones
