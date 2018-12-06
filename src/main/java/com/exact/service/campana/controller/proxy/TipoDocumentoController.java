@@ -25,6 +25,10 @@ public class TipoDocumentoController {
 		restTemplate = new RestTemplate();
 	}
 		
+	@GetMapping
+	public ResponseEntity<String> listarPrimerNivel(){
+		return restTemplate.getForEntity(serviceTipoDocumentoUrl + "/tiposdocumento", String.class);
+	}
 	
 	@GetMapping(params = {"ids"})
 	public ResponseEntity<String> listarByIds(@RequestParam List<Long> ids){
