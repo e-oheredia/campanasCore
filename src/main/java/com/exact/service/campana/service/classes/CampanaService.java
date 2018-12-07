@@ -207,6 +207,9 @@ public class CampanaService implements ICampanaService {
 			
 			int k = 0;
 			while (k < proveedores.size()) {
+				if (c.getProveedorId() == null) {
+					break;
+				}
 				if (c.getProveedorId().longValue() == Long.valueOf(proveedores.get(k).get("id").toString())) {
 					c.setProveedor(proveedores.get(k));
 					break;
