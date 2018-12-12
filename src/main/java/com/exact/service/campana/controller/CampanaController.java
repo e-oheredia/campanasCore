@@ -57,7 +57,8 @@ public class CampanaController {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
-		return new ResponseEntity<Campana>(campanaService.guardar(campana, usuarioId), HttpStatus.OK);
+		String matricula = datosUsuario.get("matricula").toString();
+		return new ResponseEntity<Campana>(campanaService.guardar(campana, usuarioId, matricula), HttpStatus.OK);
 
 	}
 
@@ -67,7 +68,8 @@ public class CampanaController {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
-		return new ResponseEntity<Campana>(campanaService.seleccionarProveedor(id, campana, usuarioId), HttpStatus.OK);
+		String matricula = datosUsuario.get("matricula").toString();
+		return new ResponseEntity<Campana>(campanaService.seleccionarProveedor(id, campana, usuarioId, matricula), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")

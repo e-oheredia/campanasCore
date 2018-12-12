@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import com.exact.service.campana.controller.proxy.BuzonController;
 import com.exact.service.campana.controller.proxy.DistritoController;
+import com.exact.service.campana.controller.proxy.EmpleadoController;
 import com.exact.service.campana.controller.proxy.PaqueteController;
 import com.exact.service.campana.controller.proxy.TipoDocumentoController;
 import com.exact.service.campana.controller.proxy.PlazoController;
@@ -80,9 +81,12 @@ public class CampanaService implements ICampanaService {
 	
 	@Autowired
 	PaqueteController paqueteController;
+	
+	@Autowired
+	EmpleadoController empleadoController;
 
 	@Override
-	public Campana guardar(Campana campana, Long usuarioId) {
+	public Campana guardar(Campana campana, Long usuarioId, String matricula) {
 
 		AccionRestosCampana accionRestosCampanaCargos;
 		AccionRestosCampana accionRestosCampanaRezagos;
@@ -118,14 +122,14 @@ public class CampanaService implements ICampanaService {
 		campana.getAccionRestosCargosCampana().setAccionRestosCampana(accionRestosCampanaCargos);
 		campana.getAccionRestosRezagosCampana().setAccionRestosCampana(accionRestosCampanaRezagos);
 		campana.setAuspiciador(auspiciador);
-		campana.addSeguimientoCampana(new SeguimientoCampana("", usuarioId,
+		campana.addSeguimientoCampana(new SeguimientoCampana("", usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CREADO.getValue()))));
 
 		return campanaDao.save(campana);
 	}
 
 	@Override
-	public Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId) {
+	public Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId, String matricula) {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.setProveedor(campana.getProveedor());
 		campanaBD.setCostoCampana(campana.getCostoCampana());
@@ -133,7 +137,7 @@ public class CampanaService implements ICampanaService {
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(
 				"Proveedor: ".concat(campana.getProveedor().get("nombre").toString()).concat(". Costo: ")
 						.concat(String.valueOf(campana.getCostoCampana())),
-				usuarioId, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
+				usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
 
 		return campanaDao.save(campanaBD);
 
@@ -157,6 +161,13 @@ public class CampanaService implements ICampanaService {
 				distritoController::listarByIds, ItemCampana::getDistritoId);
 
 		setDistritosToItemsCampana(itemsCampana, distritos);
+		
+		List<SeguimientoCampana> seguimientosCampana = getSeguimientosCampanasFromCampana(campanasList);
+		
+		List<Map<String, Object>> empleados = getAtributosFromSeguimientosCampana(seguimientosCampana,
+				empleadoController::listarEmpleadoByMatriculas, SeguimientoCampana::getMatricula);
+		
+		setEmpleadosToSeguimientosCampana(seguimientosCampana, empleados);
 
 		// Buzones
 		List<Map<String, Object>> buzones = getAtributosFromCampanas(campanasList, buzonController::listarByIds,
@@ -211,12 +222,18 @@ public class CampanaService implements ICampanaService {
 		}
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
-
 		// Distritos
 		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
 				distritoController::listarByIds, ItemCampana::getDistritoId);
 
 		setDistritosToItemsCampana(itemsCampana, distritos);
+		
+		List<SeguimientoCampana> seguimientosCampana = getSeguimientosCampanasFromCampana(campanasList);
+		
+		List<Map<String, Object>> empleados = getAtributosFromSeguimientosCampana(seguimientosCampana,
+				empleadoController::listarEmpleadoByMatriculas, SeguimientoCampana::getMatricula);
+		
+		setEmpleadosToSeguimientosCampana(seguimientosCampana, empleados);
 
 		// Buzones
 		List<Map<String, Object>> buzones = getAtributosFromCampanas(campanasList, buzonController::listarByIds,
@@ -251,6 +268,16 @@ public class CampanaService implements ICampanaService {
 				.stream(CommonUtils.jsonArrayToMap(registrosJson).spliterator(), false).collect(Collectors.toList());
 		return registros;
 	}
+	
+	private List<Map<String, Object>> getAtributosFromSeguimientosCampana(List<SeguimientoCampana> seguimientosCampana,
+			Function<List<String>, ResponseEntity<String>> funcion, Function<? super SeguimientoCampana, ? extends String> mapper)
+			throws JSONException {
+		List<String> registroIds = seguimientosCampana.stream().map(mapper).collect(Collectors.toList());
+		JSONArray registrosJson = new JSONArray(funcion.apply(registroIds).getBody().toString());
+		List<Map<String, Object>> registros = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(registrosJson).spliterator(), false).collect(Collectors.toList());
+		return registros;
+	}
 
 	private List<Map<String, Object>> getAtributosFromCampanas(List<Campana> campanas,
 			Function<List<Long>, ResponseEntity<String>> funcion, Function<? super Campana, ? extends Long> mapper)
@@ -276,6 +303,19 @@ public class CampanaService implements ICampanaService {
 			while (i < distritos.size()) {
 				if (itemCampana.getDistritoId().longValue() == Long.valueOf(distritos.get(i).get("id").toString())) {
 					itemCampana.setDistrito(distritos.get(i));
+					break;
+				}
+				i++;
+			}
+		}
+	}
+	
+	private void setEmpleadosToSeguimientosCampana(List<SeguimientoCampana> seguimientosCampana, List<Map<String, Object>> empleados) {
+		for (SeguimientoCampana seguimientoCampana : seguimientosCampana) {
+			int i = 0;
+			while (i < empleados.size()) {
+				if (seguimientoCampana.getMatricula().equals(empleados.get(i).get("matricula").toString())) {
+					seguimientoCampana.setEmpleado(empleados.get(i));
 					break;
 				}
 				i++;
@@ -345,6 +385,12 @@ public class CampanaService implements ICampanaService {
 		List<ItemCampana> itemsCampana = new ArrayList<ItemCampana>();
 		campanas.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
 		return itemsCampana;
+	}
+	
+	private List<SeguimientoCampana> getSeguimientosCampanasFromCampana(List<Campana> campanas) {
+		List<SeguimientoCampana> seguimientosCampana = new ArrayList<SeguimientoCampana>();
+		campanas.forEach(campana -> campana.getSeguimientosCampana().forEach(seguimientoCampana -> seguimientosCampana.add(seguimientoCampana)));
+		return seguimientosCampana;
 	}
 
 	
