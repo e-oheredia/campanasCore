@@ -1,6 +1,5 @@
 package com.exact.service.campana.service.classes;
 
-
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,10 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -59,19 +61,19 @@ public class CampanaService implements ICampanaService {
 
 	@Autowired
 	IGrupoCentroCostosDao grupoCentroCostosDao;
-	
+
 	@Autowired
 	BuzonController buzonController;
-	
+
 	@Autowired
 	PlazoController plazoController;
-	
+
 	@Autowired
 	ProveedorController proveedorController;
-	
+
 	@Autowired
 	TipoDocumentoController tipoDocumentoController;
-	
+
 	@Autowired
 	DistritoController distritoController;
 
@@ -124,36 +126,144 @@ public class CampanaService implements ICampanaService {
 		campanaBD.setProveedor(campana.getProveedor());
 		campanaBD.setCostoCampana(campana.getCostoCampana());
 		campanaBD.setTipoCampana(campana.getTipoCampana());
-		campanaBD.addSeguimientoCampana(
-				new SeguimientoCampana("Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
-						.concat(". Costo: ").concat(String.valueOf(campana.getCostoCampana())), usuarioId, 
-						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
-		
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(
+				"Proveedor: ".concat(campana.getProveedor().get("nombre").toString()).concat(". Costo: ")
+						.concat(String.valueOf(campana.getCostoCampana())),
+				usuarioId, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
+
 		return campanaDao.save(campanaBD);
 
 	}
 
-
-
 	@Override
-	public Iterable<Campana> listarCampanasPorEstado(Long estadoId) throws ClientProtocolException, IOException, JSONException {
-		
+	public Iterable<Campana> listarCampanasPorEstado(Long estadoId)
+			throws ClientProtocolException, IOException, JSONException {
+
 		Iterable<Campana> campanas = campanaDao.listarCampanasPorEstado(estadoId);
 		List<Campana> campanasList = StreamSupport.stream(campanas.spliterator(), false).collect(Collectors.toList());
-		
-		if(campanasList == null) {
+
+		if (campanasList == null) {
 			return null;
-		}		
-		
-		List<ItemCampana> itemsCampana = new ArrayList<ItemCampana>();
-		campanasList.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
-		
-		//Distritos
-		List<Long> distritoIds = itemsCampana.stream().map(ItemCampana::getDistritoId).collect(Collectors.toList());
-		JSONArray distritoJson = new JSONArray(distritoController.listarByIds(distritoIds).getBody().toString());		
-		List<Map<String, Object>> distritos = StreamSupport.stream(CommonUtils.jsonArrayToMap(distritoJson).spliterator(),false).collect(Collectors.toList());;
-		
-		for (ItemCampana itemCampana: itemsCampana) {
+		}
+
+		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
+
+		// Distritos
+		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
+				distritoController::listarByIds, ItemCampana::getDistritoId);
+
+		setDistritosToItemsCampana(itemsCampana, distritos);
+
+		// Buzones
+		List<Map<String, Object>> buzones = getAtributosFromCampanas(campanasList, buzonController::listarByIds,
+				Campana::getBuzonId);
+
+		// Plazos
+		List<Map<String, Object>> plazos = getAtributosFromCampanas(campanasList, plazoController::listarAll);
+
+		// Proveedores
+		List<Map<String, Object>> proveedores = getAtributosFromCampanas(campanasList, proveedorController::listarAll);
+
+		// TiposDocumento
+		List<Map<String, Object>> tiposDocumento = getAtributosFromCampanas(campanasList,
+				tipoDocumentoController::listarByIds, Campana::getTipoDocumentoId);
+
+		setAtributosToCampanas(campanasList,  buzones, plazos, proveedores, tiposDocumento);
+
+		return campanasList;
+	}
+
+	@Override
+	public Campana campanaById(Long id) throws ClientProtocolException, IOException, JSONException {
+		Campana campana = campanaDao.findById(id).orElse(null);
+
+		if (campana != null) {
+
+			JSONObject buzonJson = new JSONObject(
+					buzonController.listarById(campana.getBuzonId()).getBody().toString());
+			campana.setBuzon(CommonUtils.jsonToMap(buzonJson));
+
+			JSONObject plazoJson = new JSONObject(
+					plazoController.listarById(campana.getPlazoId()).getBody().toString());
+			campana.setPlazo(CommonUtils.jsonToMap(plazoJson));
+
+			JSONObject proveedorJson = new JSONObject(
+					proveedorController.listarById(campana.getProveedorId()).getBody().toString());
+			campana.setProveedor(CommonUtils.jsonToMap(proveedorJson));
+		}
+
+		return campana;
+	}
+	
+	@Override
+	public Iterable<Campana> listarCampanasPorEstados(List<Long> estadoIds) throws JSONException {
+		Iterable<Campana> campanas = campanaDao.listarCampanasPorEstados(estadoIds);
+		List<Campana> campanasList = StreamSupport.stream(campanas.spliterator(), false).collect(Collectors.toList());
+
+		if (campanasList == null) {
+			return null;
+		}
+
+		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
+
+		// Distritos
+		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
+				distritoController::listarByIds, ItemCampana::getDistritoId);
+
+		setDistritosToItemsCampana(itemsCampana, distritos);
+
+		// Buzones
+		List<Map<String, Object>> buzones = getAtributosFromCampanas(campanasList, buzonController::listarByIds,
+				Campana::getBuzonId);
+
+		// Plazos
+		List<Map<String, Object>> plazos = getAtributosFromCampanas(campanasList, plazoController::listarAll);
+
+		// Proveedores
+		List<Map<String, Object>> proveedores = getAtributosFromCampanas(campanasList, proveedorController::listarAll);
+
+		// TiposDocumento
+		List<Map<String, Object>> tiposDocumento = getAtributosFromCampanas(campanasList,
+				tipoDocumentoController::listarByIds, Campana::getTipoDocumentoId);
+
+		setAtributosToCampanas(campanasList,  buzones, plazos, proveedores, tiposDocumento);
+
+		return campanasList;
+	}
+
+
+	/*****************************************************************************************************/
+
+	private List<Map<String, Object>> getAtributosFromItemsCampana(List<ItemCampana> itemsCampana,
+			Function<List<Long>, ResponseEntity<String>> funcion, Function<? super ItemCampana, ? extends Long> mapper)
+			throws JSONException {
+		List<Long> registroIds = itemsCampana.stream().map(mapper).collect(Collectors.toList());
+		JSONArray registrosJson = new JSONArray(funcion.apply(registroIds).getBody().toString());
+		List<Map<String, Object>> registros = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(registrosJson).spliterator(), false).collect(Collectors.toList());
+		return registros;
+	}
+
+	private List<Map<String, Object>> getAtributosFromCampanas(List<Campana> campanas,
+			Function<List<Long>, ResponseEntity<String>> funcion, Function<? super Campana, ? extends Long> mapper)
+			throws JSONException {
+		List<Long> registroIds = campanas.stream().map(mapper).collect(Collectors.toList());
+		JSONArray registrosJson = new JSONArray(funcion.apply(registroIds).getBody().toString());
+		List<Map<String, Object>> registros = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(registrosJson).spliterator(), false).collect(Collectors.toList());
+		return registros;
+	}
+
+	private List<Map<String, Object>> getAtributosFromCampanas(List<Campana> campanas,
+			Supplier<ResponseEntity<String>> funcion) throws JSONException {
+		JSONArray registrosJson = new JSONArray(funcion.get().getBody().toString());
+		List<Map<String, Object>> registros = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(registrosJson).spliterator(), false).collect(Collectors.toList());
+		return registros;
+	}
+
+	private void setDistritosToItemsCampana(List<ItemCampana> itemsCampana, List<Map<String, Object>> distritos) {
+		for (ItemCampana itemCampana : itemsCampana) {
 			int i = 0;
 			while (i < distritos.size()) {
 				if (itemCampana.getDistritoId().longValue() == Long.valueOf(distritos.get(i).get("id").toString())) {
@@ -163,28 +273,12 @@ public class CampanaService implements ICampanaService {
 				i++;
 			}
 		}
-		
-		//Buzones
-		List<Long> buzonIds = campanasList.stream().map(Campana::getBuzonId).collect(Collectors.toList());		
-		JSONArray buzonJson = new JSONArray(buzonController.listarByIds(buzonIds).getBody().toString());		
-		List<Map<String, Object>> buzones = StreamSupport.stream(CommonUtils.jsonArrayToMap(buzonJson).spliterator(),false).collect(Collectors.toList());;
-		
-		//Plazos		
-		JSONArray plazoJson = new JSONArray(plazoController.listarAll().getBody().toString());		
-		List<Map<String, Object>> plazos = StreamSupport.stream(CommonUtils.jsonArrayToMap(plazoJson).spliterator(),false).collect(Collectors.toList());;
-		
-		//Proveedores	
-		JSONArray proveedorJson = new JSONArray(proveedorController.listarAll().getBody().toString());		
-		List<Map<String, Object>> proveedores = StreamSupport.stream(CommonUtils.jsonArrayToMap(proveedorJson).spliterator(),false).collect(Collectors.toList());;
-			
-		//TiposDocumento
-		List<Long> tiposDocumentoIds = campanasList.stream().map(Campana::getTipoDocumentoId).collect(Collectors.toList());		
-		JSONArray tiposDocumentoJson = new JSONArray(tipoDocumentoController.listarByIds(tiposDocumentoIds).getBody().toString());		
-		List<Map<String, Object>> tiposDocumento = StreamSupport.stream(CommonUtils.jsonArrayToMap(tiposDocumentoJson).spliterator(),false).collect(Collectors.toList());;
-					
-		
-		for(Campana c : campanasList) {
-			
+	}
+
+	private void setAtributosToCampanas(List<Campana> campanasList, List<Map<String, Object>> buzones,
+			List<Map<String, Object>> plazos, List<Map<String, Object>> proveedores, List<Map<String, Object>> tiposDocumento) {
+		for (Campana c : campanasList) {
+
 			int i = 0;
 			while (i < buzones.size()) {
 				if (c.getBuzonId().longValue() == Long.valueOf(buzones.get(i).get("id").toString())) {
@@ -193,8 +287,7 @@ public class CampanaService implements ICampanaService {
 				}
 				i++;
 			}
-			
-			
+
 			int j = 0;
 			while (j < plazos.size()) {
 				if (c.getPlazoId().longValue() == Long.valueOf(plazos.get(j).get("id").toString())) {
@@ -203,8 +296,7 @@ public class CampanaService implements ICampanaService {
 				}
 				j++;
 			}
-			
-			
+
 			int k = 0;
 			while (k < proveedores.size()) {
 				if (c.getProveedorId() == null) {
@@ -216,8 +308,7 @@ public class CampanaService implements ICampanaService {
 				}
 				k++;
 			}
-			
-			
+
 			int l = 0;
 			while (l < tiposDocumento.size()) {
 				if (c.getTipoDocumentoId().longValue() == Long.valueOf(tiposDocumento.get(l).get("id").toString())) {
@@ -227,27 +318,13 @@ public class CampanaService implements ICampanaService {
 				l++;
 			}
 		}
-				
-		return campanasList;
-	}
-	
-	@Override
-	public Campana campanaById(Long id) throws ClientProtocolException, IOException, JSONException {
-		Campana campana = campanaDao.findById(id).orElse(null);
-		
-		if (campana !=null) {			
-			
-			JSONObject buzonJson = new JSONObject(buzonController.listarById(campana.getBuzonId()).getBody().toString());		
-			campana.setBuzon(CommonUtils.jsonToMap(buzonJson));
-			
-			JSONObject plazoJson = new JSONObject(plazoController.listarById(campana.getPlazoId()).getBody().toString());		
-			campana.setPlazo(CommonUtils.jsonToMap(plazoJson));
-			
-			JSONObject proveedorJson = new JSONObject(proveedorController.listarById(campana.getProveedorId()).getBody().toString());		
-			campana.setProveedor(CommonUtils.jsonToMap(proveedorJson));
-		}
-		
-		return campana;
 	}
 
+	private List<ItemCampana> getItemsCampanasFromCampanas(List<Campana> campanas) {
+		List<ItemCampana> itemsCampana = new ArrayList<ItemCampana>();
+		campanas.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
+		return itemsCampana;
+	}
+
+	
 }

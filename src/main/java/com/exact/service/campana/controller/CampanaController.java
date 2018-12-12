@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,16 @@ public class CampanaController {
 	public ResponseEntity<String> listarCampanasPorEstado(@RequestParam Long estadoId) throws ClientProtocolException, IOException, JSONException{
 		
 		Iterable<Campana> campanas = campanaService.listarCampanasPorEstado(estadoId);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);
+		
+	}
+	
+	@GetMapping(params= {"estadoIds"})
+	public ResponseEntity<String> listarCampanasPorEstado(@RequestParam List<Long> estadoIds) throws ClientProtocolException, IOException, JSONException{
+		
+		Iterable<Campana> campanas = campanaService.listarCampanasPorEstados(estadoIds);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);
