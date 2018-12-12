@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import com.exact.service.campana.controller.proxy.BuzonController;
 import com.exact.service.campana.controller.proxy.DistritoController;
+import com.exact.service.campana.controller.proxy.PaqueteController;
 import com.exact.service.campana.controller.proxy.TipoDocumentoController;
 import com.exact.service.campana.controller.proxy.PlazoController;
 import com.exact.service.campana.controller.proxy.ProveedorController;
@@ -76,6 +77,9 @@ public class CampanaService implements ICampanaService {
 
 	@Autowired
 	DistritoController distritoController;
+	
+	@Autowired
+	PaqueteController paqueteController;
 
 	@Override
 	public Campana guardar(Campana campana, Long usuarioId) {
@@ -163,12 +167,14 @@ public class CampanaService implements ICampanaService {
 
 		// Proveedores
 		List<Map<String, Object>> proveedores = getAtributosFromCampanas(campanasList, proveedorController::listarAll);
+		
+		List<Map<String, Object>> paquetesHabilitado = getAtributosFromCampanas(campanasList, paqueteController::listarAll);
 
 		// TiposDocumento
 		List<Map<String, Object>> tiposDocumento = getAtributosFromCampanas(campanasList,
 				tipoDocumentoController::listarByIds, Campana::getTipoDocumentoId);
 
-		setAtributosToCampanas(campanasList,  buzones, plazos, proveedores, tiposDocumento);
+		setAtributosToCampanas(campanasList,  buzones, plazos, proveedores, tiposDocumento, paquetesHabilitado);
 
 		return campanasList;
 	}
@@ -221,12 +227,14 @@ public class CampanaService implements ICampanaService {
 
 		// Proveedores
 		List<Map<String, Object>> proveedores = getAtributosFromCampanas(campanasList, proveedorController::listarAll);
+		
+		List<Map<String, Object>> paquetesHabilitado = getAtributosFromCampanas(campanasList, paqueteController::listarAll);
 
 		// TiposDocumento
 		List<Map<String, Object>> tiposDocumento = getAtributosFromCampanas(campanasList,
 				tipoDocumentoController::listarByIds, Campana::getTipoDocumentoId);
 
-		setAtributosToCampanas(campanasList,  buzones, plazos, proveedores, tiposDocumento);
+		setAtributosToCampanas(campanasList,  buzones, plazos, proveedores, tiposDocumento, paquetesHabilitado);
 
 		return campanasList;
 	}
@@ -276,7 +284,7 @@ public class CampanaService implements ICampanaService {
 	}
 
 	private void setAtributosToCampanas(List<Campana> campanasList, List<Map<String, Object>> buzones,
-			List<Map<String, Object>> plazos, List<Map<String, Object>> proveedores, List<Map<String, Object>> tiposDocumento) {
+			List<Map<String, Object>> plazos, List<Map<String, Object>> proveedores, List<Map<String, Object>> tiposDocumento, List<Map<String, Object>> paquetes) {
 		for (Campana c : campanasList) {
 
 			int i = 0;
@@ -317,6 +325,19 @@ public class CampanaService implements ICampanaService {
 				}
 				l++;
 			}
+			
+			
+			if (c.getPaqueteHabilitadoId() != null) {
+				int m = 0;
+				while (m < paquetes.size()) {
+					if (c.getPaqueteHabilitadoId().longValue() == Long.valueOf(paquetes.get(m).get("id").toString())) {
+						c.setPaqueteHabilitado(paquetes.get(m));
+						break;
+					}
+					m++;
+				}
+			}
+			
 		}
 	}
 

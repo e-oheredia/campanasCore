@@ -43,7 +43,7 @@ public class CampanaController {
 	}
 	
 	@GetMapping(params= {"estadoIds"})
-	public ResponseEntity<String> listarCampanasPorEstado(@RequestParam List<Long> estadoIds) throws ClientProtocolException, IOException, JSONException{
+	public ResponseEntity<String> listarCampanasPorEstados(@RequestParam List<Long> estadoIds) throws ClientProtocolException, IOException, JSONException{
 		
 		Iterable<Campana> campanas = campanaService.listarCampanasPorEstados(estadoIds);
 		ObjectMapper mapper = new ObjectMapper();
