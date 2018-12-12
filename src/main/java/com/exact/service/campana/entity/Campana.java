@@ -40,12 +40,6 @@ public class Campana implements Serializable {
 	@Column(name = "requiere_gps", nullable = false)
 	private boolean requiereGps;
 
-	@Column(name = "cantidad_lima", nullable = false)
-	private Long cantidadLima;
-
-	@Column(name = "cantidad_provincia", nullable = false)
-	private Long cantidadProvincia;
-
 	@Column(name = "requiere_georreferencia", nullable = false)
 	private boolean requiereGeorreferencia;
 
@@ -113,7 +107,7 @@ public class Campana implements Serializable {
 	@JoinColumn(name = "tipo_agrupado_id", nullable=true)
 	private TipoAgrupado tipoAgrupado;
 	
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "proveedor_impresion_id", nullable=true)
 	private ProveedorImpresion proveedorImpresion;
 	
@@ -267,26 +261,6 @@ public class Campana implements Serializable {
 
 	public void setRequiereGps(boolean requiereGps) {
 		this.requiereGps = requiereGps;
-	}
-
-
-	public Long getCantidadLima() {
-		return cantidadLima;
-	}
-
-
-	public void setCantidadLima(Long cantidadLima) {
-		this.cantidadLima = cantidadLima;
-	}
-
-
-	public Long getCantidadProvincia() {
-		return cantidadProvincia;
-	}
-
-
-	public void setCantidadProvincia(Long cantidadProvincia) {
-		this.cantidadProvincia = cantidadProvincia;
 	}
 
 
