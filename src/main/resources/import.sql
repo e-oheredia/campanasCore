@@ -73,10 +73,10 @@ INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'COTIZ
 SET IDENTITY_INSERT [dbo].[estado_campana] OFF
 SET IDENTITY_INSERT [dbo].[seguimiento_campana] ON 
 
-INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (1, CAST(N'2018-12-12T10:48:53.4790000' AS DateTime2), N'', 1, 1, 1)
-INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (2, CAST(N'2018-12-12T10:53:27.2770000' AS DateTime2), N'', 1, 2, 1)
-INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (3, CAST(N'2018-12-12T10:56:32.0570000' AS DateTime2), N'', 1, 3, 1)
-INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id]) VALUES (4, CAST(N'2018-12-12T10:57:19.5450000' AS DateTime2), N'Proveedor: URBANO. Costo: 540.0', 1, 1, 2)
+INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id], [matricula]) VALUES (1, CAST(N'2018-12-12T10:48:53.4790000' AS DateTime2), N'', 1, 1, 1, 'OHEREDIA')
+INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id], [matricula]) VALUES (2, CAST(N'2018-12-12T10:53:27.2770000' AS DateTime2), N'', 1, 2, 1, 'OHEREDIA')
+INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id], [matricula]) VALUES (3, CAST(N'2018-12-12T10:56:32.0570000' AS DateTime2), N'', 1, 3, 1, 'OHEREDIA')
+INSERT [dbo].[seguimiento_campana] ([seguimiento_campana_id], [fecha], [observacion], [usuario_id], [campana_id], [estado_campana_id], [matricula]) VALUES (4, CAST(N'2018-12-12T10:57:19.5450000' AS DateTime2), N'Proveedor: URBANO. Costo: 540.0', 1, 1, 2, 'OHEREDIA')
 SET IDENTITY_INSERT [dbo].[seguimiento_campana] OFF
 SET IDENTITY_INSERT [dbo].[centro_costos] ON 
 
