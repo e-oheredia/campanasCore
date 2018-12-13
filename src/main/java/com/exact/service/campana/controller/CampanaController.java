@@ -71,6 +71,16 @@ public class CampanaController {
 		String matricula = datosUsuario.get("matricula").toString();
 		return new ResponseEntity<Campana>(campanaService.seleccionarProveedor(id, campana, usuarioId, matricula), HttpStatus.OK);
 	}
+	
+	@PutMapping("{id}/recotizacion")
+	public ResponseEntity<Campana> recotizar(@PathVariable Long id, @RequestBody Campana campana,
+			Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		return new ResponseEntity<Campana>(campanaService.recotizar(id, campana, usuarioId, matricula), HttpStatus.OK);
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<String> listarById(@PathVariable Long id)

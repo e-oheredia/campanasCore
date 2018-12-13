@@ -255,6 +255,19 @@ public class CampanaService implements ICampanaService {
 
 		return campanasList;
 	}
+	
+	@Override
+	public Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula) {		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		
+		campanaBD.setCostoCampana(campana.getCostoCampana());		
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(
+				". Costo: ".concat(String.valueOf(campana.getCostoCampana())),
+				usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.COTIZADA.getValue()))));
+
+		return campanaDao.save(campanaBD);
+	}
+
 
 
 	/*****************************************************************************************************/
@@ -392,6 +405,7 @@ public class CampanaService implements ICampanaService {
 		campanas.forEach(campana -> campana.getSeguimientosCampana().forEach(seguimientoCampana -> seguimientosCampana.add(seguimientoCampana)));
 		return seguimientosCampana;
 	}
+
 
 	
 }
