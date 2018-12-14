@@ -80,4 +80,16 @@ public class CampanaController {
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campana), campana == null ? HttpStatus.NOT_FOUND : HttpStatus.OK);
 	}
+	
+	@PutMapping("{id}/confirmarbasegeo")
+	public ResponseEntity<Campana> confirmarBaseGeo(@PathVariable Long id, Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.confirmarBaseGeo(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	
 }

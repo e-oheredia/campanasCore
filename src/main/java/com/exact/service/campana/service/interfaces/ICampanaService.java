@@ -16,5 +16,6 @@ public interface ICampanaService {
 	Iterable<Campana> listarCampanasPorEstados(List<Long> estadoIds) throws JSONException;
 	Campana guardar(Campana campana, Long usuarioId, String matricula);
 	Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId, String matricula);
+	Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula);
 
 }

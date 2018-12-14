@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -156,6 +157,8 @@ public class CampanaService implements ICampanaService {
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
 
+		
+		
 		// Distritos
 		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
 				distritoController::listarByIds, ItemCampana::getDistritoId);
@@ -386,11 +389,30 @@ public class CampanaService implements ICampanaService {
 		campanas.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
 		return itemsCampana;
 	}
-	
+		
 	private List<SeguimientoCampana> getSeguimientosCampanasFromCampana(List<Campana> campanas) {
 		List<SeguimientoCampana> seguimientosCampana = new ArrayList<SeguimientoCampana>();
 		campanas.forEach(campana -> campana.getSeguimientosCampana().forEach(seguimientoCampana -> seguimientosCampana.add(seguimientoCampana)));
 		return seguimientosCampana;
+	}
+
+	@Override
+	public Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula) {
+		
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		
+		Optional<ItemCampana> ic = campanaBD.getItemsCampana().stream().filter(itemCampana -> !itemCampana.isEnviable()).findFirst();
+					
+		
+		if(ic.isPresent()) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADAYMODIFICADA.getValue()))));
+		}else {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADAYCONFIRMADA.getValue()))));
+		}
+		
+		return campanaDao.save(campanaBD);
+
 	}
 
 	
