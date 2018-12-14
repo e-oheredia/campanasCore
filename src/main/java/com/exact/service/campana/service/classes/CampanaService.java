@@ -429,6 +429,24 @@ public class CampanaService implements ICampanaService {
 
 	}
 
+	@Override
+	public Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula) {
+				
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+		
+		SeguimientoCampana seguimientocampana = campanaBD.getUltimoSeguimientoCampana();
+		
+		if(seguimientocampana.getEstadoCampana().getId().longValue()==2) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA.getValue()))));
+		}else if(seguimientocampana.getEstadoCampana().getId().longValue()==4) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
+		}
+		
+		
+		
+		
+		return campanaDao.save(campanaBD);
+	}
 
-	
+
 }

@@ -1,8 +1,10 @@
 package com.exact.service.campana.entity;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -416,6 +418,12 @@ public class Campana implements Serializable {
 
 	public void setSeguimientosCampana(Set<SeguimientoCampana> seguimientosCampana) {
 		this.seguimientosCampana = seguimientosCampana;
+	}
+	
+	@JsonIgnore
+	public SeguimientoCampana getUltimoSeguimientoCampana() {
+		return (this.getSeguimientosCampana().stream().max(Comparator.comparing(SeguimientoCampana::getFecha))
+		.orElseThrow(NoSuchElementException::new));		
 	}
 
 
