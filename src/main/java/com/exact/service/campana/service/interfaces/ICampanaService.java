@@ -17,5 +17,7 @@ public interface ICampanaService {
 	Campana guardar(Campana campana, Long usuarioId, String matricula);
 	Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId, String matricula);
 	Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula);
+	Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula);
+
 
 }

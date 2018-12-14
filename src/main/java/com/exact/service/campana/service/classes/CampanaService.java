@@ -258,6 +258,19 @@ public class CampanaService implements ICampanaService {
 
 		return campanasList;
 	}
+	
+	@Override
+	public Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula) {		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		
+		campanaBD.setCostoCampana(campana.getCostoCampana());		
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(
+				". Costo: ".concat(String.valueOf(campana.getCostoCampana())),
+				usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.COTIZADA.getValue()))));
+
+		return campanaDao.save(campanaBD);
+	}
+
 
 
 	/*****************************************************************************************************/
@@ -396,6 +409,7 @@ public class CampanaService implements ICampanaService {
 		return seguimientosCampana;
 	}
 
+
 	@Override
 	public Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula) {
 		
@@ -406,14 +420,15 @@ public class CampanaService implements ICampanaService {
 					
 		
 		if(ic.isPresent()) {
-			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADAYMODIFICADA.getValue()))));
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
 		}else {
-			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADAYCONFIRMADA.getValue()))));
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_CONFIRMADA.getValue()))));
 		}
 		
 		return campanaDao.save(campanaBD);
 
 	}
+
 
 	
 }
