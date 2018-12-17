@@ -101,7 +101,7 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.confirmarBaseGeo(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
-	@PutMapping("/confirmarbasegeo")
+	@PutMapping("/subirbaseproveedor")
 	public ResponseEntity<Campana> subirBaseProveedor(@RequestBody Campana campana, Authentication authentication) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();

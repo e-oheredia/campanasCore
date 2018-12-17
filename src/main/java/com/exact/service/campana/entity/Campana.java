@@ -5,7 +5,10 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -405,6 +408,13 @@ public class Campana implements Serializable {
 		return itemsCampana;
 	}
 
+	public Iterable<ItemCampana> getItemsCampanaNoEnviables() {
+				
+		Iterable<ItemCampana> ic = this.itemsCampana.stream().filter(itemCampana -> !itemCampana.isEnviable()).collect(Collectors.toList());
+		
+		return ic;
+				 
+	}
 
 	public void setItemsCampana(Set<ItemCampana> itemsCampana) {
 		this.itemsCampana = itemsCampana;

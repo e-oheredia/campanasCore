@@ -1,11 +1,14 @@
 package com.exact.service.campana.service.classes;
 
 import org.apache.http.client.ClientProtocolException;
+import org.hibernate.mapping.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -433,17 +436,27 @@ public class CampanaService implements ICampanaService {
 	public Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula) {
 				
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
-		
+			
 		SeguimientoCampana seguimientocampana = campanaBD.getUltimoSeguimientoCampana();
 		
-		if(seguimientocampana.getEstadoCampana().getId().longValue()==2) {
+		if(seguimientocampana.getEstadoCampana().getId().longValue()==2 || seguimientocampana.getEstadoCampana().getId().longValue()==4) {
 			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA.getValue()))));
-		}else if(seguimientocampana.getEstadoCampana().getId().longValue()==4) {
-			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
 		}
 		
+		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaNoEnviables();
+		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
 		
+		Iterable<ItemCampana> icampana = campana.getItemsCampana();
+		List<ItemCampana> itemcampana = StreamSupport.stream(icampana.spliterator(), false).collect(Collectors.toList());
+
 		
+		for(int i=0; i<itemcampanaBD.size();i++) {
+			ItemCampana ic = itemcampanaBD.get(i);
+			ItemCampana icamp = itemcampana.get(i);
+			if(ic.isEnviable()==false) {
+				ic.setEnviable(icamp.isEnviable());
+			}
+		}
 		
 		return campanaDao.save(campanaBD);
 	}
