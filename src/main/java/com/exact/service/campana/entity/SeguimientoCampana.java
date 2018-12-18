@@ -69,6 +69,13 @@ public class SeguimientoCampana implements Serializable {
 		this.estadoCampana = estadoCampana;
 	}
 	
+	public SeguimientoCampana(Long usuarioId, String matricula, EstadoCampana estadoCampana) {
+		super();
+		this.matricula = matricula;
+		this.usuarioId = usuarioId;
+		this.estadoCampana = estadoCampana;
+	}
+	
 	 public SeguimientoCampana() {
 		
 	}

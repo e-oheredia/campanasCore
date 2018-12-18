@@ -1,13 +1,17 @@
 package com.exact.service.campana.service.classes;
 
 import org.apache.http.client.ClientProtocolException;
+import org.hibernate.mapping.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -156,6 +160,8 @@ public class CampanaService implements ICampanaService {
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
 
+		
+		
 		// Distritos
 		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
 				distritoController::listarByIds, ItemCampana::getDistritoId);
@@ -399,7 +405,7 @@ public class CampanaService implements ICampanaService {
 		campanas.forEach(campana -> campana.getItemsCampana().forEach(itemCampana -> itemsCampana.add(itemCampana)));
 		return itemsCampana;
 	}
-	
+		
 	private List<SeguimientoCampana> getSeguimientosCampanasFromCampana(List<Campana> campanas) {
 		List<SeguimientoCampana> seguimientosCampana = new ArrayList<SeguimientoCampana>();
 		campanas.forEach(campana -> campana.getSeguimientosCampana().forEach(seguimientoCampana -> seguimientosCampana.add(seguimientoCampana)));
@@ -407,5 +413,53 @@ public class CampanaService implements ICampanaService {
 	}
 
 
-	
+	@Override
+	public Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula) {
+		
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		
+		Optional<ItemCampana> ic = campanaBD.getItemsCampana().stream().filter(itemCampana -> !itemCampana.isEnviable()).findFirst();
+					
+		
+		if(ic.isPresent()) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
+		}else {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_CONFIRMADA.getValue()))));
+		}
+		
+		return campanaDao.save(campanaBD);
+
+	}
+
+	@Override
+	public Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula) {
+				
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+			
+		SeguimientoCampana seguimientocampana = campanaBD.getUltimoSeguimientoCampana();
+		
+		if(seguimientocampana.getEstadoCampana().getId().longValue()==2 || seguimientocampana.getEstadoCampana().getId().longValue()==4) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA.getValue()))));
+		}
+		
+		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaNoEnviables();
+		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
+		
+		Iterable<ItemCampana> icampana = campana.getItemsCampana();
+		List<ItemCampana> itemcampana = StreamSupport.stream(icampana.spliterator(), false).collect(Collectors.toList());
+
+		
+		for(int i=0; i<itemcampanaBD.size();i++) {
+			ItemCampana ic = itemcampanaBD.get(i);
+			ItemCampana icamp = itemcampana.get(i);
+			if(ic.isEnviable()==false) {
+				ic.setEnviable(icamp.isEnviable());
+			}
+		}
+		
+		return campanaDao.save(campanaBD);
+	}
+
+
 }

@@ -1,5 +1,5 @@
 USE [db_campana_core]
-GO
+
 SET IDENTITY_INSERT [dbo].[accion_restos_campana] ON 
 
 INSERT [dbo].[accion_restos_campana] ([accion_restos_campana_id]) VALUES (1)
