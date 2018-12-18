@@ -436,50 +436,53 @@ public class CampanaService implements ICampanaService {
 	public Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula) {
 				
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
-		SeguimientoCampana seguimientocampana = campanaBD.getUltimoSeguimientoCampana();
 		
-		if(seguimientocampana.getEstadoCampana().getId().longValue()==2 || seguimientocampana.getEstadoCampana().getId().longValue()==4) {
-			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA.getValue()))));
-		}
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA.getValue()))));
+		
 		
 		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaNoEnviables();
 		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
 		
 		Iterable<ItemCampana> icampana = campana.getItemsCampana();
-		List<ItemCampana> itemcampana = StreamSupport.stream(icampana.spliterator(), false).collect(Collectors.toList());
+		List<ItemCampana> itemscampana = StreamSupport.stream(icampana.spliterator(), false).collect(Collectors.toList());
 		
-		for(int i=0; i<itemcampanaBD.size();i++) {
-			ItemCampana ic = itemcampanaBD.get(i);
-			ItemCampana icamp = itemcampana.get(i);
-			if(ic.isEnviable()==false) {
-				ic.setEnviable(icamp.isEnviable());
+		
+		itemcampanaBD.forEach(itemcampana -> {
+			for (int i = 0; i < itemscampana.size(); i++) {
+				if (itemcampana.getId().longValue() == itemscampana.get(i).getId().longValue()) {
+					itemcampana.setEnviable(itemscampana.get(i).isEnviable());
+					itemscampana.remove(i);
+					break;
+				}
 			}
-		}
+		});
+		
 		return campanaDao.save(campanaBD);
 	}
 	
 	public Campana modificarBase(Campana campana, Long usuarioId, String matricula) {
 		
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
-		SeguimientoCampana seguimientocampana = campanaBD.getUltimoSeguimientoCampana();
 		
-		if(seguimientocampana.getEstadoCampana().getId().longValue()==3) {
-			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
-		}
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
+		
 		
 		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaNoEnviables();
 		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
 		
 		Iterable<ItemCampana> icampana = campana.getItemsCampana();
-		List<ItemCampana> itemcampana = StreamSupport.stream(icampana.spliterator(), false).collect(Collectors.toList());
+		List<ItemCampana> itemscampana = StreamSupport.stream(icampana.spliterator(), false).collect(Collectors.toList());
 		
-		for(int i=0; i<itemcampanaBD.size();i++) {
-			ItemCampana ic = itemcampanaBD.get(i);
-			ItemCampana icamp = itemcampana.get(i);
-			if(ic.isEnviable()==false) {
-				ic.setEnviable(icamp.isEnviable());
+		itemcampanaBD.forEach(itemcampana -> {
+			for (int i = 0; i < itemscampana.size(); i++) {
+				if (itemcampana.getId().longValue() == itemscampana.get(i).getId().longValue()) {
+					itemcampana.setDireccion(itemscampana.get(i).getDireccion());
+					itemcampana.setDistritoId(itemscampana.get(i).getDistritoId());
+					itemscampana.remove(i);
+					break;
+				}
 			}
-		}
+		});
 		return campanaDao.save(campanaBD);
 		
 	}
