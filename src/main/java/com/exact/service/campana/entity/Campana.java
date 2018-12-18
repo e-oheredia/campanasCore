@@ -17,6 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -108,9 +110,12 @@ public class Campana implements Serializable {
 	@JoinColumn(name="campana_id")
 	private Set<SeguimientoCampana> seguimientosCampana;
 	
-	@ManyToOne
-	@JoinColumn(name = "tipo_agrupado_id", nullable=true)
-	private TipoAgrupado tipoAgrupado;
+	@ManyToMany
+	@JoinTable(
+			name="tipo_agrupado_campana", 
+			joinColumns=@JoinColumn(name="campana_id"), 
+			inverseJoinColumns=@JoinColumn(name="tipo_agrupado_id"))	
+	private Set<TipoAgrupado> tiposAgrupado;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name = "proveedor_impresion_id", nullable=true)
@@ -187,22 +192,21 @@ public class Campana implements Serializable {
 		this.paqueteHabilitado = paqueteHabilitado;
 		this.paqueteHabilitadoId = Long.valueOf(paqueteHabilitado.get("id").toString());
 	}
-
-
-	public TipoAgrupado getTipoAgrupado() {
-		return tipoAgrupado;
-	}
-
-
-	public void setTipoAgrupado(TipoAgrupado tipoAgrupado) {
-		this.tipoAgrupado = tipoAgrupado;
-	}
-
+	
+	
 
 	public AccionRestosCargosCampana getAccionRestosCargosCampana() {
 		return accionRestosCargosCampana;
 	}
 
+
+	public Set<TipoAgrupado> getTiposAgrupado() {
+		return tiposAgrupado;
+	}
+
+	public void setTiposAgrupado(Set<TipoAgrupado> tiposAgrupado) {
+		this.tiposAgrupado = tiposAgrupado;
+	}
 
 	public void setAccionRestosCargosCampana(AccionRestosCargosCampana accionRestosCargosCampana) {
 		this.accionRestosCargosCampana = accionRestosCargosCampana;
@@ -409,11 +413,8 @@ public class Campana implements Serializable {
 	}
 
 	public Iterable<ItemCampana> getItemsCampanaNoEnviables() {
-				
-		Iterable<ItemCampana> ic = this.itemsCampana.stream().filter(itemCampana -> !itemCampana.isEnviable()).collect(Collectors.toList());
 		
-		return ic;
-				 
+		return this.itemsCampana.stream().filter(itemCampana -> !itemCampana.isEnviable()).collect(Collectors.toList());
 	}
 
 	public void setItemsCampana(Set<ItemCampana> itemsCampana) {

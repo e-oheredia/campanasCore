@@ -111,5 +111,15 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.subirBaseProveedor(campana, usuarioId, matricula), HttpStatus.OK);
 	}
 	
+	@PutMapping("/modificarbasegeo")
+	public ResponseEntity<Campana> modificarBaseGeo(@RequestBody Campana campana, Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.modificarBase(campana, usuarioId, matricula), HttpStatus.OK);
+	}
+	
 	
 }

@@ -18,6 +18,7 @@ public interface ICampanaService {
 	Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId, String matricula);
 	Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula);
 	Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula);
+	Campana modificarBase(Campana campana, Long usuarioId, String matricula);
 	Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula);
 
 
