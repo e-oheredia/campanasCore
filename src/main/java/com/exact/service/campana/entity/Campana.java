@@ -413,11 +413,8 @@ public class Campana implements Serializable {
 	}
 
 	public Iterable<ItemCampana> getItemsCampanaNoEnviables() {
-				
-		Iterable<ItemCampana> ic = this.itemsCampana.stream().filter(itemCampana -> !itemCampana.isEnviable()).collect(Collectors.toList());
 		
-		return ic;
-				 
+		return this.itemsCampana.stream().filter(itemCampana -> !itemCampana.isEnviable()).collect(Collectors.toList());
 	}
 
 	public void setItemsCampana(Set<ItemCampana> itemsCampana) {
