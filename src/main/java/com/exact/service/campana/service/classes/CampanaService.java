@@ -137,12 +137,11 @@ public class CampanaService implements ICampanaService {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.setProveedor(campana.getProveedor());
 		campanaBD.setCostoCampana(campana.getCostoCampana());
-		campanaBD.setTipoCampana(campana.getTipoCampana());
+		campanaBD.setTipoCampana(campana.getTipoCampana());		
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(
 				"Proveedor: ".concat(campana.getProveedor().get("nombre").toString()).concat(". Costo: ")
 						.concat(String.valueOf(campana.getCostoCampana())),
-				usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
-
+				usuarioId, matricula, new EstadoCampana(Long.valueOf(campanaBD.isRequiereGeorreferencia() ? EstadoCampanaEnum.ASIGNADO.getValue() : EstadoCampanaEnum.COTIZADA.getValue()))));
 		return campanaDao.save(campanaBD);
 
 	}
