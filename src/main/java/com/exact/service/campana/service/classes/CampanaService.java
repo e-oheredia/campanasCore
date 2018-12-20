@@ -423,9 +423,9 @@ public class CampanaService implements ICampanaService {
 					
 		
 		if(ic.isPresent()) {
-			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
-		}else {
 			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_CONFIRMADA.getValue()))));
+		}else {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.COTIZADA.getValue()))));
 		}
 		
 		return campanaDao.save(campanaBD);
