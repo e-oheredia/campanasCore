@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.exact.service.campana.entity.Campana;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -119,6 +120,16 @@ public class CampanaController {
 		String matricula = datosUsuario.get("matricula").toString();
 		
 		return new ResponseEntity<Campana>(campanaService.modificarBase(campana, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PostMapping("{id}/adjuntarconformidad")
+	public ResponseEntity<Campana> adjuntarConformidad(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.adjuntarConformidad(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
 	}
 	
 	

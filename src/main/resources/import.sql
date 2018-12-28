@@ -70,6 +70,7 @@ INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (3, N'GEORE
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (4, N'GEOREFERENCIADA Y MODIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (5, N'GEOREFERENCIADA Y CONFIRMADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'COTIZADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'CONFIRMADA Y ADJUNTADA')
 SET IDENTITY_INSERT [dbo].[estado_campana] OFF
 SET IDENTITY_INSERT [dbo].[seguimiento_campana] ON 
 

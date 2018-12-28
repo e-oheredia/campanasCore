@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.exact.service.campana.entity.Campana;
 
@@ -20,6 +21,6 @@ public interface ICampanaService {
 	Campana confirmarBaseGeo(Long campanaId,Long usuarioId, String matricula);
 	Campana modificarBase(Campana campana, Long usuarioId, String matricula);
 	Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula);
-
+	Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile multipartfile) throws IOException ;
 
 }
