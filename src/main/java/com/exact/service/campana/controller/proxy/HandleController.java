@@ -1,6 +1,7 @@
 package com.exact.service.campana.controller.proxy;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
@@ -9,6 +10,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -41,23 +43,39 @@ public class HandleController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public int upload(MultipartFile multipartFile) throws IOException{
+	public int upload(@RequestParam("file") MultipartFile multipartFile) throws IOException{
 		
 		try {
 			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-			body.add("file", multipartFile);
+			body.add("file", new FileSystemResource	(convert(multipartFile)));
 			
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 			
-			ResponseEntity<byte[]> response = restTemplate.postForEntity(handleFilesPath + "/upload", new HttpEntity<>(body, headers),
-				      byte[].class);
+			ResponseEntity<String> response = restTemplate.postForEntity(handleFilesPath + "/upload", new HttpEntity<>(body, headers),
+				      String.class);
 
-			return Integer.parseInt(response.toString());
+			return Integer.parseInt(response.getBody().toString());
 		} catch (Exception ex) {
 		    return 0;
 		}
 		
 	}
+	
+	public static File convert(MultipartFile file)
+	  {    
+	    File convFile = new File(file.getOriginalFilename());
+	    try {
+	        convFile.createNewFile();
+	          FileOutputStream fos = new FileOutputStream(convFile); 
+	            fos.write(file.getBytes());
+	            fos.close(); 
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    } 
+
+	    return convFile;
+	 }
 	
 }
