@@ -7,7 +7,8 @@ public enum EstadoCampanaEnum {
 	GEOREFERENCIADA(3),
 	GEOREFERENCIADA_Y_MODIFICADA(4),
 	GEOREFERENCIADA_Y_CONFIRMADA(5),
-	COTIZADA(6);
+	COTIZADA(6),
+	IMPRESION_SOLICITADA(7);
 
 		
 	private final int value;

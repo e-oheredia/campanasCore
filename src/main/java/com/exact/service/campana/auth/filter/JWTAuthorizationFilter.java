@@ -81,15 +81,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		datosUsuario.put("idUsuario", idUsuario);
 		datosUsuario.put("matricula", matricula);		
 		Object permisos = claims.get("permisos");
-		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		
+		Collection<GrantedAuthority> authorities = new ArrayList<>();		
 		((ArrayList<Map<String, Object>>) new ObjectMapper()
 				.readValue(permisos.toString().getBytes(), ArrayList.class)).stream().forEach(
 				permiso -> {
 					GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permiso.get("nombre").toString());
-					authorities.add(grantedAuthority);
+					authorities.add(grantedAuthority);					
 				}
 		);
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(claims.get("perfil").toString());
+		authorities.add(grantedAuthority);
 		datosUsuario.put("permisos", permisos);
 //		Collection<? extends GrantedAuthority> authorities = 
 //				Arrays.asList(new ObjectMapper().addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)
