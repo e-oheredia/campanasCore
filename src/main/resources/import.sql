@@ -70,7 +70,20 @@ INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (3, N'GEORE
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (4, N'GEOREFERENCIADA Y MODIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (5, N'GEOREFERENCIADA Y CONFIRMADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'COTIZADA')
-INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'CONFIRMADA Y ADJUNTADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (7, N'CONFIRMADA Y ADJUNTADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (8, N'CONFIRMADA Y VERIFICADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (9, N'CONFORMIDAD DENEGADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (10, N'IMPRESION SOLICITADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (11, N'MUESTRA ADJUNTADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (12, N'MUESTRA VERIFICADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (13, N'MUESTRA DENEGADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (14, N'IMPRESION INICIADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (15, N'IMPRESION POR RECOGER')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (16, N'GUIA ADJUNTADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (17, N'GUIA VERIFICADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (18, N'GUIA DENEGADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (19, N'INICIADA')
+
 SET IDENTITY_INSERT [dbo].[estado_campana] OFF
 SET IDENTITY_INSERT [dbo].[seguimiento_campana] ON 
 
