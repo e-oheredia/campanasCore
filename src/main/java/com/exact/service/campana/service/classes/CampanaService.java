@@ -1,5 +1,6 @@
 package com.exact.service.campana.service.classes;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.hibernate.mapping.Collection;
 import org.json.JSONArray;
@@ -20,13 +21,16 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 import com.exact.service.campana.controller.proxy.BuzonController;
 import com.exact.service.campana.controller.proxy.DistritoController;
 import com.exact.service.campana.controller.proxy.EmpleadoController;
+import com.exact.service.campana.controller.proxy.HandleController;
 import com.exact.service.campana.controller.proxy.PaqueteController;
 import com.exact.service.campana.controller.proxy.TipoDocumentoController;
 import com.exact.service.campana.controller.proxy.PlazoController;
@@ -88,6 +92,9 @@ public class CampanaService implements ICampanaService {
 	
 	@Autowired
 	EmpleadoController empleadoController;
+	
+	@Autowired
+	HandleController handlecontroller;
 
 	@Override
 	public Campana guardar(Campana campana, Long usuarioId, String matricula) {
@@ -484,6 +491,27 @@ public class CampanaService implements ICampanaService {
 		});
 		return campanaDao.save(campanaBD);
 		
+	}
+
+	@Override
+	public Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile file) throws IOException {
+				
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+			
+		if (file != null) {
+			String rutaAutorizacion = campanaBD.getId().toString() + "."
+					+ FilenameUtils.getExtension(file.getOriginalFilename());
+			campanaBD.setRutaAutorizacion(rutaAutorizacion);
+			MockMultipartFile multipartFile = new MockMultipartFile(rutaAutorizacion, rutaAutorizacion,file.getContentType(),file.getInputStream());
+			if(handlecontroller.upload(multipartFile)==1) {
+				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue()))));
+				}else {
+					return null;
+				}
+		}
+				
+			
+		return campanaDao.save(campanaBD);
 	}
 	
 	
