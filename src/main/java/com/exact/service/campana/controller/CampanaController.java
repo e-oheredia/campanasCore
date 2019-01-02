@@ -34,19 +34,18 @@ public class CampanaController {
 	ICampanaService campanaService;
 
 	@GetMapping
-	public ResponseEntity<String> listarCampanasPorEstado(@RequestParam Long estadoId) throws ClientProtocolException, IOException, JSONException{
+	public ResponseEntity<String> listarCampanasPorEstado(@RequestParam Long estadoId, Authentication authentication) throws ClientProtocolException, IOException, JSONException{
 		
-		Iterable<Campana> campanas = campanaService.listarCampanasPorEstado(estadoId);
+		Iterable<Campana> campanas = campanaService.listarCampanasPorEstado(estadoId, authentication);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);
-		
+		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);		
 	}
 	
 	@GetMapping(params= {"estadoIds"})
-	public ResponseEntity<String> listarCampanasPorEstados(@RequestParam List<Long> estadoIds) throws ClientProtocolException, IOException, JSONException{
+	public ResponseEntity<String> listarCampanasPorEstados(@RequestParam List<Long> estadoIds, Authentication authentication) throws ClientProtocolException, IOException, JSONException{
 		
-		Iterable<Campana> campanas = campanaService.listarCampanasPorEstados(estadoIds);
+		Iterable<Campana> campanas = campanaService.listarCampanasPorEstados(estadoIds, authentication);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);
@@ -122,14 +121,14 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.modificarBase(campana, usuarioId, matricula), HttpStatus.OK);
 	}
 	
-	@PostMapping("{id}/adjuntarconformidad")
-	public ResponseEntity<Campana> adjuntarConformidad(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+	@PutMapping("{id}/solicitarimpresion")
+	public ResponseEntity<Campana> solicitarImpresion(@PathVariable Long id, Authentication authentication) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
 		String matricula = datosUsuario.get("matricula").toString();
 		
-		return new ResponseEntity<Campana>(campanaService.adjuntarConformidad(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
+		return new ResponseEntity<Campana>(campanaService.solicitarImpresion(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
 	

@@ -27,6 +27,9 @@ public class EmpleadoController {
 	@Value("${service.empleados}")
 	String serviceEmpleadosUrl;
 	
+	@Value("${service.proveedores}")
+	String serviceProveedoresUrl;
+	
 	@GetMapping("/autenticado")
 	public ResponseEntity<String> listarEmpleadoAuthenticado(Authentication authentication) {
 		@SuppressWarnings("unchecked")
@@ -38,6 +41,15 @@ public class EmpleadoController {
 				.fromUriString(serviceEmpleadosUrl + "/empleados")
 			    .queryParam("matricula", matricula);
 		
+		if (authentication.getAuthorities().stream().anyMatch(
+				authority -> {
+					String role = authority.getAuthority();
+				return role.equals("PROVEEDOR");
+			})) {
+			builder = UriComponentsBuilder
+				.fromUriString(serviceProveedoresUrl + "/empleados")
+			    .queryParam("matricula", matricula);
+		}		
 		
 		String url = builder.toUriString();
 	    
