@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -513,8 +515,57 @@ public class CampanaService implements ICampanaService {
 			
 		return campanaDao.save(campanaBD);
 	}
-	
-	
 
+	@Override
+	public Campana denegarConformidad(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_DENEGADA.getValue()))));
+		return campanaDao.save(campanaBD);
+		
+	}
+
+	@Override
+	public Campana aceptarConformidad(Long campanaId, Long usuarioId, String matricula) throws JSONException {
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		
+		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
+		List<ItemCampana> lstitemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
+			
+		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(lstitemcampanaBD,
+				distritoController::listarByIds, ItemCampana::getDistritoId);
+		
+		setDistritosToItemsCampana(lstitemcampanaBD, distritos);
+		
+		for(ItemCampana ic : lstitemcampanaBD ) {
+			
+			String clasifica = ic.getClasificacion();
+			
+			Map<String, Object> MapDistrito =  ic.getDistrito();
+			Map<String, Object> MapProvincia = (Map<String, Object>) ic.getDistrito().get("provincia");			
+			Map<String, Object> MapDepartamento = (Map<String, Object>) MapProvincia.get("departamento");	
+			
+			String nombre_distrito = MapDistrito.get("nombre").toString().trim();
+			String nombre_provincia = MapProvincia.get("nombre").toString().trim();
+			String nombre_departamento = MapDepartamento.get("nombre").toString().trim();
+			
+			if(clasifica.equals("Provincia")) {
+				
+				//ic.getDistrito().get("nombre").toString().compareTo(anotherString)
+				
+			}else {
+				
+			}
+			
+			
+		}
+		
+		
+		
+						
+		
+		return null;
+	}
+	
 
 }

@@ -22,5 +22,7 @@ public interface ICampanaService {
 	Campana modificarBase(Campana campana, Long usuarioId, String matricula);
 	Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula);
 	Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile multipartfile) throws IOException ;
+	Campana denegarConformidad(Long campanaId, Long usuarioId, String matricula);
+	Campana aceptarConformidad(Long campanaId, Long usuarioId, String matricula) throws JSONException;
 
 }

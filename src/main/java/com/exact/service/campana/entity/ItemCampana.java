@@ -41,11 +41,24 @@ public class ItemCampana implements Serializable {
 	private String razonSocial;
 	@Column(name="enviable", nullable=false)
 	private boolean enviable;
+	@Column(name="correlativo", nullable=true)
+	private int correlativo;
 	
 	
 	public boolean isEnviable() {
 		return enviable;
 	}
+
+	
+	public int getCorrelativo() {
+		return correlativo;
+	}
+
+
+	public void setCorrelativo(int correlativo) {
+		this.correlativo = correlativo;
+	}
+
 
 	public void setEnviable(boolean enviable) {
 		this.enviable = enviable;
@@ -115,9 +128,23 @@ public class ItemCampana implements Serializable {
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
 	}
-
-	/**
-	 * 
-	 */
+	
+	@JsonIgnore
+	public String getClasificacion() {
+		String valor="";
+					
+		Map<String, Object> MapProvincia = (Map<String, Object>) this.getDistrito().get("provincia");
+		
+		if(MapProvincia.get("nombre").toString().trim().equals("Lima") || MapProvincia.get("nombre").toString().trim().equals("Callao")) {
+			valor = "Lima Metropolitana y Callao";
+		}else {
+			valor = "Provincia";
+		}
+		
+		return valor;
+	}
+	
+	
+	
 	private static final long serialVersionUID = 1L;
 }

@@ -416,6 +416,11 @@ public class Campana implements Serializable {
 		
 		return this.itemsCampana.stream().filter(itemCampana -> !itemCampana.isEnviable()).collect(Collectors.toList());
 	}
+	
+	public Iterable<ItemCampana> getItemsCampanaEnviables() {
+		
+		return this.itemsCampana.stream().filter(itemCampana -> itemCampana.isEnviable()).collect(Collectors.toList());
+	}
 
 	public void setItemsCampana(Set<ItemCampana> itemsCampana) {
 		this.itemsCampana = itemsCampana;

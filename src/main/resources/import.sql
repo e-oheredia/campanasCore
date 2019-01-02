@@ -58,9 +58,9 @@ INSERT [dbo].[empresa_auspiciadora] ([contacto], [direccion], [razon_social], [r
 INSERT [dbo].[grupo_centro_costos] ([auspiciador_id]) VALUES (3)
 SET IDENTITY_INSERT [dbo].[item_campana] ON 
 
-INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [campana_id]) VALUES (1, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 1)
-INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [campana_id]) VALUES (2, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 1, N'HEREDIA', N'', 2)
-INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [campana_id]) VALUES (3, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 3)
+INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo], [campana_id]) VALUES (1, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 0, 1)
+INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo], [campana_id]) VALUES (2, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 1, N'HEREDIA', N'', 0, 2)
+INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo], [campana_id]) VALUES (3, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 0, 3)
 SET IDENTITY_INSERT [dbo].[item_campana] OFF
 SET IDENTITY_INSERT [dbo].[estado_campana] ON 
 
@@ -70,8 +70,8 @@ INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (3, N'GEORE
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (4, N'GEOREFERENCIADA Y MODIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (5, N'GEOREFERENCIADA Y CONFIRMADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'COTIZADA')
-INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (7, N'CONFIRMADA Y ADJUNTADA')
-INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (8, N'CONFIRMADA Y VERIFICADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (7, N'CONFORMIDAD ADJUNTADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (8, N'CONFORMIDAD VERIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (9, N'CONFORMIDAD DENEGADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (10, N'IMPRESION SOLICITADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (11, N'MUESTRA ADJUNTADA')
