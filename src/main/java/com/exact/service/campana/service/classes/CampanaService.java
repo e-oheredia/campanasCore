@@ -51,6 +51,7 @@ import com.exact.service.campana.entity.EstadoCampana;
 import com.exact.service.campana.entity.GrupoCentroCostos;
 import com.exact.service.campana.entity.InformacionDevolucionRestos;
 import com.exact.service.campana.entity.ItemCampana;
+import com.exact.service.campana.utils.OrdenarItemCampanaImpresion;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -537,34 +538,16 @@ public class CampanaService implements ICampanaService {
 		
 		setDistritosToItemsCampana(lstitemcampanaBD, distritos);
 		
-		for(ItemCampana ic : lstitemcampanaBD ) {
-			
-			String clasifica = ic.getClasificacion();
-			
-			Map<String, Object> MapDistrito =  ic.getDistrito();
-			Map<String, Object> MapProvincia = (Map<String, Object>) ic.getDistrito().get("provincia");			
-			Map<String, Object> MapDepartamento = (Map<String, Object>) MapProvincia.get("departamento");	
-			
-			String nombre_distrito = MapDistrito.get("nombre").toString().trim();
-			String nombre_provincia = MapProvincia.get("nombre").toString().trim();
-			String nombre_departamento = MapDepartamento.get("nombre").toString().trim();
-			
-			if(clasifica.equals("Provincia")) {
+		Collections.sort(lstitemcampanaBD, new OrdenarItemCampanaImpresion().reversed());
 				
-				//ic.getDistrito().get("nombre").toString().compareTo(anotherString)
-				
-			}else {
-				
-			}
-			
-			
+		for(int i=0;i<lstitemcampanaBD.size();i++) {
+			lstitemcampanaBD.get(i).setCorrelativo(i+1);
 		}
 		
-		
-		
-						
-		
-		return null;
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_VERIFICADA.getValue()))));
+				
+		return campanaDao.save(campanaBD);
+				
 	}
 	
 

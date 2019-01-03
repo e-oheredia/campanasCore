@@ -1,6 +1,7 @@
 package com.exact.service.campana.entity;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -130,9 +131,10 @@ public class ItemCampana implements Serializable {
 	}
 	
 	@JsonIgnore
+	@SuppressWarnings("unchecked")
 	public String getClasificacion() {
 		String valor="";
-					
+		
 		Map<String, Object> MapProvincia = (Map<String, Object>) this.getDistrito().get("provincia");
 		
 		if(MapProvincia.get("nombre").toString().trim().equals("Lima") || MapProvincia.get("nombre").toString().trim().equals("Callao")) {
@@ -140,11 +142,9 @@ public class ItemCampana implements Serializable {
 		}else {
 			valor = "Provincia";
 		}
-		
 		return valor;
 	}
-	
-	
-	
+		
 	private static final long serialVersionUID = 1L;
 }
+
