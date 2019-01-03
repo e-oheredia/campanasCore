@@ -441,6 +441,12 @@ public class Campana implements Serializable {
 		return (this.getSeguimientosCampana().stream().max(Comparator.comparing(SeguimientoCampana::getFecha))
 		.orElseThrow(NoSuchElementException::new));		
 	}
+	
+	@JsonIgnore
+	public SeguimientoCampana getPrimerSeguimientoCampana() {
+		return (this.getSeguimientosCampana().stream().min(Comparator.comparing(SeguimientoCampana::getFecha))
+		.orElseThrow(NoSuchElementException::new));		
+	}
 
 
 	/**

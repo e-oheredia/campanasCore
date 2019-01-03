@@ -83,7 +83,6 @@ INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (16, N'GUIA
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (17, N'GUIA VERIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (18, N'GUIA DENEGADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (19, N'INICIADA')
-
 SET IDENTITY_INSERT [dbo].[estado_campana] OFF
 SET IDENTITY_INSERT [dbo].[seguimiento_campana] ON 
 
