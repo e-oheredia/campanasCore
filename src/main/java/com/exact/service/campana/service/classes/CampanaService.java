@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ import com.exact.service.campana.entity.EstadoCampana;
 import com.exact.service.campana.entity.GrupoCentroCostos;
 import com.exact.service.campana.entity.InformacionDevolucionRestos;
 import com.exact.service.campana.entity.ItemCampana;
+import com.exact.service.campana.utils.OrdenarItemCampanaImpresion;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -552,11 +555,46 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
+
+	public Campana denegarConformidad(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_DENEGADA.getValue()))));
+		return campanaDao.save(campanaBD);
+		
+	}
+
+	@Override
+	public Campana aceptarConformidad(Long campanaId, Long usuarioId, String matricula) throws JSONException {
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		
+		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
+		List<ItemCampana> lstitemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
+			
+		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(lstitemcampanaBD,
+				distritoController::listarByIds, ItemCampana::getDistritoId);
+		
+		setDistritosToItemsCampana(lstitemcampanaBD, distritos);
+		
+		Collections.sort(lstitemcampanaBD, new OrdenarItemCampanaImpresion().reversed());
+				
+		for(int i=0;i<lstitemcampanaBD.size();i++) {
+			lstitemcampanaBD.get(i).setCorrelativo(i+1);
+		}
+		
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_VERIFICADA.getValue()))));
+				
+		return campanaDao.save(campanaBD);
+				
+	}
+	
+
 	public Campana solicitarImpresion(Long campanaId, Long usuarioId, String matricula) {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_SOLICITADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
+
 
 }

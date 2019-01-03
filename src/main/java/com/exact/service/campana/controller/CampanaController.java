@@ -121,6 +121,16 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.modificarBase(campana, usuarioId, matricula), HttpStatus.OK);
 	}
 	
+	@PostMapping("{id}/adjuntarconformidad")
+	public ResponseEntity<Campana> adjuntarConformidad(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.adjuntarConformidad(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
+	}
+	
 	@PutMapping("{id}/solicitarimpresion")
 	public ResponseEntity<Campana> solicitarImpresion(@PathVariable Long id, Authentication authentication) {
 		@SuppressWarnings("unchecked")
@@ -131,5 +141,24 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.solicitarImpresion(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
+	@PutMapping("{id}/denegarconformidad")
+	public ResponseEntity<Campana> denegarConformidad(@PathVariable Long id, Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.denegarConformidad(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PutMapping("{id}/aceptarconformidad")
+	public ResponseEntity<Campana> aceptarConformidad(@PathVariable Long id, Authentication authentication) throws JSONException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.aceptarConformidad(id, usuarioId, matricula), HttpStatus.OK);
+	}
 	
 }
