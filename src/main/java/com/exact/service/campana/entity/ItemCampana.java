@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -44,7 +45,6 @@ public class ItemCampana implements Serializable {
 	private boolean enviable;
 	@Column(name="correlativo", nullable=true)
 	private int correlativo;
-	
 	
 	public boolean isEnviable() {
 		return enviable;

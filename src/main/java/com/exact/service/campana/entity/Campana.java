@@ -22,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -136,6 +137,15 @@ public class Campana implements Serializable {
 	@Transient
 	@JsonInclude(value=Include.	NON_NULL)
 	private Map<String, Object> paqueteHabilitado;
+	
+	@PrePersist
+	public void prePersist() {
+		if (!this.requiereGeorreferencia) {
+			this.itemsCampana.forEach(itemCampana -> {
+				itemCampana.setEnviable(true);
+			});
+		}
+	}
 	
 	public Campana() {
 		seguimientosCampana = new HashSet<SeguimientoCampana>();
