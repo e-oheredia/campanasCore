@@ -73,7 +73,7 @@ INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (6, N'COTIZ
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (7, N'CONFORMIDAD ADJUNTADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (8, N'CONFORMIDAD VERIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (9, N'CONFORMIDAD DENEGADA')
-INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (10, N'IMPRESION SOLICITADA')
+INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (10, N'MUESTRA SOLICITADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (11, N'MUESTRA ADJUNTADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (12, N'MUESTRA VERIFICADA')
 INSERT [dbo].[estado_campana] ([estado_campana_id], [nombre]) VALUES (13, N'MUESTRA DENEGADA')

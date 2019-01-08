@@ -26,6 +26,8 @@ public interface ICampanaService {
 	Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile multipartfile) throws IOException ;
 	Campana denegarConformidad(Long campanaId, Long usuarioId, String matricula);
 	Campana aceptarConformidad(Long campanaId, Long usuarioId, String matricula) throws JSONException;
-	Campana solicitarImpresion(Long campanaId, Long usuarioId, String matricula);
+	Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula);
+	Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula);
+	Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula);
 
 }
