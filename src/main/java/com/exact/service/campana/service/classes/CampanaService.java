@@ -589,10 +589,26 @@ public class CampanaService implements ICampanaService {
 	}
 	
 
-	public Campana solicitarImpresion(Long campanaId, Long usuarioId, String matricula) {
+	public Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula) {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
-				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_SOLICITADA.getValue()))));
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_SOLICITADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_VERIFICADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_DENEGADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
 

@@ -131,14 +131,14 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.adjuntarConformidad(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
 	}
 	
-	@PutMapping("{id}/solicitarimpresion")
-	public ResponseEntity<Campana> solicitarImpresion(@PathVariable Long id, Authentication authentication) {
+	@PutMapping("{id}/solicitarmuestra")
+	public ResponseEntity<Campana> solicitarMuestra(@PathVariable Long id, Authentication authentication) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
 		String matricula = datosUsuario.get("matricula").toString();
 		
-		return new ResponseEntity<Campana>(campanaService.solicitarImpresion(id, usuarioId, matricula), HttpStatus.OK);
+		return new ResponseEntity<Campana>(campanaService.solicitarMuestra(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
 	@PutMapping("{id}/denegarconformidad")
@@ -159,6 +159,26 @@ public class CampanaController {
 		String matricula = datosUsuario.get("matricula").toString();
 		
 		return new ResponseEntity<Campana>(campanaService.aceptarConformidad(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PutMapping("{id}/aprobarmuestra")
+	public ResponseEntity<Campana> aprobarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.aprobarMuestra(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PutMapping("{id}/denegarmuestra")
+	public ResponseEntity<Campana> denegarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.denegarMuestra(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
 }
