@@ -639,5 +639,15 @@ public class CampanaService implements ICampanaService {
 		
 	}
 
+	@Override
+	public Campana iniciarImpresion(Long campanaId, Long usuarioId, String matricula) {
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_INICIADA.getValue()))));
+		return campanaDao.save(campanaBD);
+		
+	}
+
 
 }
