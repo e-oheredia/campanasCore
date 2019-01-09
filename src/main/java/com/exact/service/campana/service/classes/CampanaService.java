@@ -537,13 +537,15 @@ public class CampanaService implements ICampanaService {
 	public Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile file) throws IOException {
 				
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-			
+		
+		String ruta= "autorizaciones";
+		
 		if (file != null) {
 			String rutaAutorizacion = campanaBD.getId().toString() + "."
 					+ FilenameUtils.getExtension(file.getOriginalFilename());
 			campanaBD.setRutaAutorizacion(rutaAutorizacion);
 			MockMultipartFile multipartFile = new MockMultipartFile(rutaAutorizacion, rutaAutorizacion,file.getContentType(),file.getInputStream());
-			if(handlecontroller.upload(multipartFile)==1) {
+			if(handlecontroller.upload(multipartFile,ruta)==1) {
 				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue()))));
 				}else {
 					return null;
@@ -582,7 +584,7 @@ public class CampanaService implements ICampanaService {
 			lstitemcampanaBD.get(i).setCorrelativo(i+1);
 		}
 		
-		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_VERIFICADA.getValue()))));
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue()))));
 				
 		return campanaDao.save(campanaBD);
 				
@@ -600,7 +602,7 @@ public class CampanaService implements ICampanaService {
 	public Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula) {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
-				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_VERIFICADA.getValue()))));
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ACEPTADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
 
@@ -610,6 +612,31 @@ public class CampanaService implements ICampanaService {
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_DENEGADA.getValue()))));
 		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana adjuntarMuestra(Long campanaId, Long usuarioId, String matricula, MultipartFile file)
+			throws IOException {
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		String ruta = "muestras";
+			
+		if (file != null) {
+			String rutaMuestra = campanaBD.getId().toString() + "."
+					+ FilenameUtils.getExtension(file.getOriginalFilename());
+			campanaBD.setRutaMuestra(rutaMuestra);
+			MockMultipartFile multipartFile = new MockMultipartFile(rutaMuestra, rutaMuestra,file.getContentType(),file.getInputStream());
+			if(handlecontroller.upload(multipartFile,ruta)==1) {
+				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ADJUNTADA.getValue()))));
+				}else {
+					return null;
+				}
+		}
+			
+			
+		return campanaDao.save(campanaBD);
+	
+		
 	}
 
 

@@ -38,13 +38,14 @@ public class HandleController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public int upload(@RequestParam("file") MultipartFile multipartFile) throws IOException{
+	public int upload(@RequestParam("file") MultipartFile multipartFile, @RequestParam("ruta") String ruta) throws IOException{
 		
 		File file = CommonUtils.multipartFileToFile(multipartFile);
 				
 		try {
 			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 			body.add("file", new FileSystemResource(file));
+			body.add("ruta", ruta);
 			
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.MULTIPART_FORM_DATA);

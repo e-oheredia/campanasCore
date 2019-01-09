@@ -29,5 +29,6 @@ public interface ICampanaService {
 	Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula);
 	Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula);
 	Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula);
+	Campana adjuntarMuestra(Long campanaId, Long usuarioId, String matricula, MultipartFile multipartfile) throws IOException ;
 
 }
