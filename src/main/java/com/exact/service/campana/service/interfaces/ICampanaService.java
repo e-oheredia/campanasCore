@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.exact.service.campana.entity.Campana;
+import com.exact.service.campana.entity.ProveedorImpresion;
+
 
 public interface ICampanaService {
 
@@ -31,5 +33,6 @@ public interface ICampanaService {
 	Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula);
 	Campana adjuntarMuestra(Long campanaId, Long usuarioId, String matricula, MultipartFile multipartfile) throws IOException ;
 	Campana iniciarImpresion(Long campanaId, Long usuarioId, String matricula);
-
+	Campana adjuntarDatosImpresion(Campana campana, Long usuarioId, String matricula);
+	
 }

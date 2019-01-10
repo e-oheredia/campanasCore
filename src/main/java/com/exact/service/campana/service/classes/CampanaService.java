@@ -52,7 +52,9 @@ import com.exact.service.campana.entity.EstadoCampana;
 import com.exact.service.campana.entity.GrupoCentroCostos;
 import com.exact.service.campana.entity.InformacionDevolucionRestos;
 import com.exact.service.campana.entity.ItemCampana;
+import com.exact.service.campana.entity.ProveedorImpresion;
 import com.exact.service.campana.utils.OrdenarItemCampanaImpresion;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -647,6 +649,24 @@ public class CampanaService implements ICampanaService {
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_INICIADA.getValue()))));
 		return campanaDao.save(campanaBD);
 		
+	}
+
+	@Override
+	public Campana adjuntarDatosImpresion(Campana campana, Long usuarioId, String matricula){
+			
+		
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+				
+		if(campana.getProveedorImpresion().getFechaRecojo().after(campanaBD.getUltimoSeguimientoCampana().getFecha())) {
+			
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_POR_RECOGER.getValue()))));
+		
+		}else {
+			return null;
+		}
+				
+		return campanaDao.save(campanaBD);
 	}
 
 
