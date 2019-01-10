@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.exact.service.campana.entity.Campana;
-import com.exact.service.campana.entity.ProveedorImpresion;
 import com.exact.service.campana.service.interfaces.ICampanaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
