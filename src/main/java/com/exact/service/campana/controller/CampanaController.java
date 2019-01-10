@@ -202,7 +202,7 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.iniciarImpresion(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
-	@PostMapping("{id}/datosimpresion")
+	@PutMapping("/datosimpresion")
 	public ResponseEntity<Campana> adjuntarDatosImpresion(@RequestBody Campana campana, Authentication authentication) throws IOException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
