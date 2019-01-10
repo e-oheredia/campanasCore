@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.exact.service.campana.entity.Campana;
+import com.exact.service.campana.entity.ProveedorImpresion;
 import com.exact.service.campana.service.interfaces.ICampanaService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -131,7 +132,7 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.adjuntarConformidad(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
 	}
 	
-	@PutMapping("{id}/solicitarimpresion")
+	@PutMapping("{id}/solicitarmuestra")
 	public ResponseEntity<Campana> solicitarMuestra(@PathVariable Long id, Authentication authentication) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
@@ -200,4 +201,16 @@ public class CampanaController {
 		
 		return new ResponseEntity<Campana>(campanaService.iniciarImpresion(id, usuarioId, matricula), HttpStatus.OK);
 	}
+	
+	@PostMapping("{id}/datosimpresion")
+	public ResponseEntity<Campana> adjuntarDatosImpresion(@RequestBody Campana campana, Authentication authentication) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.adjuntarDatosImpresion(campana, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	
 }
