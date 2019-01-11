@@ -46,6 +46,9 @@ public class ItemCampana implements Serializable {
 	@Column(name="correlativo", nullable=true)
 	private int correlativo;
 	
+	@Column(name="correlativo_base", nullable=false)
+	private int correlativoBase;
+	
 	public boolean isEnviable() {
 		return enviable;
 	}
