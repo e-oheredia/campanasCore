@@ -131,14 +131,14 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.adjuntarConformidad(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
 	}
 	
-	@PutMapping("{id}/solicitarimpresion")
-	public ResponseEntity<Campana> solicitarImpresion(@PathVariable Long id, Authentication authentication) {
+	@PutMapping("{id}/solicitarmuestra")
+	public ResponseEntity<Campana> solicitarMuestra(@PathVariable Long id, Authentication authentication) {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
 		String matricula = datosUsuario.get("matricula").toString();
 		
-		return new ResponseEntity<Campana>(campanaService.solicitarImpresion(id, usuarioId, matricula), HttpStatus.OK);
+		return new ResponseEntity<Campana>(campanaService.solicitarMuestra(id, usuarioId, matricula), HttpStatus.OK);
 	}
 	
 	@PutMapping("{id}/denegarconformidad")
@@ -160,5 +160,56 @@ public class CampanaController {
 		
 		return new ResponseEntity<Campana>(campanaService.aceptarConformidad(id, usuarioId, matricula), HttpStatus.OK);
 	}
+	
+	@PutMapping("{id}/aprobarmuestra")
+	public ResponseEntity<Campana> aprobarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.aprobarMuestra(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PutMapping("{id}/denegarmuestra")
+	public ResponseEntity<Campana> denegarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.denegarMuestra(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PostMapping("{id}/adjuntarmuestra")
+	public ResponseEntity<Campana> adjuntarMuestra(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.adjuntarMuestra(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
+	}
+	
+	@PutMapping("{id}/iniciarimpresion")
+	public ResponseEntity<Campana> iniciarImpresion(@PathVariable Long id, Authentication authentication) throws JSONException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.iniciarImpresion(id, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@PutMapping("/datosimpresion")
+	public ResponseEntity<Campana> adjuntarDatosImpresion(@RequestBody Campana campana, Authentication authentication) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.adjuntarDatosImpresion(campana, usuarioId, matricula), HttpStatus.OK);
+	}
+	
 	
 }

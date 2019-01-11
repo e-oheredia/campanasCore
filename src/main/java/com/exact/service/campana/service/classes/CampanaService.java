@@ -52,7 +52,9 @@ import com.exact.service.campana.entity.EstadoCampana;
 import com.exact.service.campana.entity.GrupoCentroCostos;
 import com.exact.service.campana.entity.InformacionDevolucionRestos;
 import com.exact.service.campana.entity.ItemCampana;
+import com.exact.service.campana.entity.ProveedorImpresion;
 import com.exact.service.campana.utils.OrdenarItemCampanaImpresion;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -537,13 +539,15 @@ public class CampanaService implements ICampanaService {
 	public Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile file) throws IOException {
 				
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-			
+		
+		String ruta= "autorizaciones";
+		
 		if (file != null) {
 			String rutaAutorizacion = campanaBD.getId().toString() + "."
 					+ FilenameUtils.getExtension(file.getOriginalFilename());
 			campanaBD.setRutaAutorizacion(rutaAutorizacion);
 			MockMultipartFile multipartFile = new MockMultipartFile(rutaAutorizacion, rutaAutorizacion,file.getContentType(),file.getInputStream());
-			if(handlecontroller.upload(multipartFile)==1) {
+			if(handlecontroller.upload(multipartFile,ruta)==1) {
 				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue()))));
 				}else {
 					return null;
@@ -582,17 +586,86 @@ public class CampanaService implements ICampanaService {
 			lstitemcampanaBD.get(i).setCorrelativo(i+1);
 		}
 		
-		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_VERIFICADA.getValue()))));
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue()))));
 				
 		return campanaDao.save(campanaBD);
 				
 	}
 	
 
-	public Campana solicitarImpresion(Long campanaId, Long usuarioId, String matricula) {
+	public Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula) {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
-				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_SOLICITADA.getValue()))));
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_SOLICITADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ACEPTADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_DENEGADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana adjuntarMuestra(Long campanaId, Long usuarioId, String matricula, MultipartFile file)
+			throws IOException {
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		String ruta = "muestras";
+			
+		if (file != null) {
+			String rutaMuestra = campanaBD.getId().toString() + "."
+					+ FilenameUtils.getExtension(file.getOriginalFilename());
+			campanaBD.setRutaMuestra(rutaMuestra);
+			MockMultipartFile multipartFile = new MockMultipartFile(rutaMuestra, rutaMuestra,file.getContentType(),file.getInputStream());
+			if(handlecontroller.upload(multipartFile,ruta)==1) {
+				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ADJUNTADA.getValue()))));
+				}else {
+					return null;
+				}
+		}
+			
+			
+		return campanaDao.save(campanaBD);
+	
+		
+	}
+
+	@Override
+	public Campana iniciarImpresion(Long campanaId, Long usuarioId, String matricula) {
+		
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_INICIADA.getValue()))));
+		return campanaDao.save(campanaBD);
+		
+	}
+
+	@Override
+	public Campana adjuntarDatosImpresion(Campana campana, Long usuarioId, String matricula){
+			
+		
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+				
+		if(campana.getProveedorImpresion().getFechaRecojo().after(campanaBD.getUltimoSeguimientoCampana().getFecha())) {
+			
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_POR_RECOGER.getValue()))));
+		
+		}else {
+			return null;
+		}
+				
 		return campanaDao.save(campanaBD);
 	}
 
