@@ -155,7 +155,7 @@ public class CampanaService implements ICampanaService {
 				.addSeguimientoCampana(
 						new SeguimientoCampana(
 								"Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
-										.concat(". Costo: ").concat(String.valueOf(campana.getCostoCampana())),
+										.concat(". Costo: S/ ").concat(String.valueOf(campana.getCostoCampana())),
 								usuarioId, matricula,
 								new EstadoCampana(Long.valueOf(
 										campanaBD.isRequiereGeorreferencia() ? EstadoCampanaEnum.ASIGNADO.getValue()
@@ -313,7 +313,7 @@ public class CampanaService implements ICampanaService {
 
 		campanaBD.setCostoCampana(campana.getCostoCampana());
 		campanaBD.addSeguimientoCampana(
-				new SeguimientoCampana(". Costo: ".concat(String.valueOf(campana.getCostoCampana())), usuarioId,
+				new SeguimientoCampana(". Costo: S/ ".concat(String.valueOf(campana.getCostoCampana())), usuarioId,
 						matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.COTIZADA.getValue()))));
 
 		return campanaDao.save(campanaBD);
