@@ -58,9 +58,9 @@ INSERT [dbo].[empresa_auspiciadora] ([contacto], [direccion], [razon_social], [r
 INSERT [dbo].[grupo_centro_costos] ([auspiciador_id]) VALUES (3)
 SET IDENTITY_INSERT [dbo].[item_campana] ON 
 
-INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo], [campana_id]) VALUES (1, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 0, 1)
-INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo], [campana_id]) VALUES (2, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 1, N'HEREDIA', N'', 0, 2)
-INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo], [campana_id]) VALUES (3, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 0, 3)
+INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo_base], [correlativo], [campana_id]) VALUES (1, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 1, 0, 1)
+INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo_base], [correlativo], [campana_id]) VALUES (2, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 1, N'HEREDIA', N'', 1, 0, 2)
+INSERT [dbo].[item_campana] ([item_campana_id], [apellido_materno], [apellido_paterno], [direccion], [distrito_id], [enviable], [nombres], [razon_social], [correlativo_base], [correlativo], [campana_id]) VALUES (3, N'ORLANDO MARIO', N'CARRASCO', N'Jr. Los Cafetales Los Olivos', 1275, 0, N'HEREDIA', N'', 1, 0, 3)
 SET IDENTITY_INSERT [dbo].[item_campana] OFF
 SET IDENTITY_INSERT [dbo].[estado_campana] ON 
 
