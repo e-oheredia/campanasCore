@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "item_campana")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class ItemCampana implements Serializable {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "item_campana_id")
@@ -39,30 +39,35 @@ public class ItemCampana implements Serializable {
 	private String apellidoMaterno;
 	@Column(nullable = false)
 	private String direccion;
-	@Column(name="razon_social", nullable=true)
+	@Column(name = "razon_social", nullable = true)
 	private String razonSocial;
-	@Column(name="enviable", nullable=false)
+	@Column(name = "enviable", nullable = false)
 	private boolean enviable;
-	@Column(name="correlativo", nullable=true)
+	@Column(name = "correlativo", nullable = true)
 	private int correlativo;
-	
-	@Column(name="correlativo_base", nullable=false)
+
+	@Column(name = "correlativo_base", nullable = false)
 	private int correlativoBase;
-	
+
+	public int getCorrelativoBase() {
+		return correlativoBase;
+	}
+
+	public void setCorrelativoBase(int correlativoBase) {
+		this.correlativoBase = correlativoBase;
+	}
+
 	public boolean isEnviable() {
 		return enviable;
 	}
 
-	
 	public int getCorrelativo() {
 		return correlativo;
 	}
 
-
 	public void setCorrelativo(int correlativo) {
 		this.correlativo = correlativo;
 	}
-
 
 	public void setEnviable(boolean enviable) {
 		this.enviable = enviable;
@@ -132,22 +137,22 @@ public class ItemCampana implements Serializable {
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
 	}
-	
+
 	@JsonIgnore
 	@SuppressWarnings("unchecked")
 	public String getClasificacion() {
-		String valor="";
-		
+		String valor = "";
+
 		Map<String, Object> MapProvincia = (Map<String, Object>) this.getDistrito().get("provincia");
-		
-		if(MapProvincia.get("nombre").toString().trim().equals("Lima") || MapProvincia.get("nombre").toString().trim().equals("Callao")) {
+
+		if (MapProvincia.get("nombre").toString().trim().equals("Lima")
+				|| MapProvincia.get("nombre").toString().trim().equals("Callao")) {
 			valor = "Lima Metropolitana y Callao";
-		}else {
+		} else {
 			valor = "Provincia";
 		}
 		return valor;
 	}
-		
+
 	private static final long serialVersionUID = 1L;
 }
-
