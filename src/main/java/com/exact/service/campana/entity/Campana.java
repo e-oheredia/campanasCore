@@ -85,6 +85,9 @@ public class Campana implements Serializable {
 	@Column(name = "ruta_muestra")
 	private String rutaMuestra;
 	
+	@Column(name = "ruta_guia")
+	private String rutaGuia;
+	
 	private String observacion;
 
 	@Column(name = "proveedor_id", nullable=true)
@@ -149,7 +152,15 @@ public class Campana implements Serializable {
 			});
 		}
 	}
-	
+			
+	public String getRutaGuia() {
+		return rutaGuia;
+	}
+
+	public void setRutaGuia(String rutaGuia) {
+		this.rutaGuia = rutaGuia;
+	}
+
 	public Campana() {
 		seguimientosCampana = new HashSet<SeguimientoCampana>();
 	}	
