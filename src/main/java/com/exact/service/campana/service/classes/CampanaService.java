@@ -54,7 +54,6 @@ import com.exact.service.campana.entity.InformacionDevolucionRestos;
 import com.exact.service.campana.entity.ItemCampana;
 import com.exact.service.campana.entity.ProveedorImpresion;
 import com.exact.service.campana.utils.OrdenarItemCampanaImpresion;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
@@ -656,6 +655,15 @@ public class CampanaService implements ICampanaService {
 			
 		
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+		
+		ProveedorImpresion proveedorImpresion = new ProveedorImpresion();
+		proveedorImpresion.setFechaRecojo(campana.getProveedorImpresion().getFechaRecojo());
+		proveedorImpresion.setNombre(campana.getProveedorImpresion().getNombre());
+		proveedorImpresion.setContacto(campana.getProveedorImpresion().getContacto());
+		proveedorImpresion.setDireccion(campana.getProveedorImpresion().getDireccion());
+		
+		campanaBD.setProveedorImpresion(proveedorImpresion);
+        
 				
 		if(campana.getProveedorImpresion().getFechaRecojo().after(campanaBD.getUltimoSeguimientoCampana().getFecha())) {
 			
@@ -667,6 +675,28 @@ public class CampanaService implements ICampanaService {
 		}
 				
 		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana adjuntarGuia(Long campanaId, Long usuarioId, String matricula, MultipartFile file) throws IOException {
+			
+			Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+			String ruta = "guias";
+				
+			if (file != null) {
+				String rutaGuia = campanaBD.getId().toString() + "."
+						+ FilenameUtils.getExtension(file.getOriginalFilename());
+				campanaBD.setRutaGuia(rutaGuia);
+				MockMultipartFile multipartFile = new MockMultipartFile(rutaGuia, rutaGuia ,file.getContentType(),file.getInputStream());
+				if(handlecontroller.upload(multipartFile,ruta)==1) {
+					 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_ADJUNTADA.getValue()))));
+					}else {
+						return null;
+					}
+			}
+				
+				
+			return campanaDao.save(campanaBD);
 	}
 
 

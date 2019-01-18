@@ -211,5 +211,15 @@ public class CampanaController {
 		return new ResponseEntity<Campana>(campanaService.adjuntarDatosImpresion(campana, usuarioId, matricula), HttpStatus.OK);
 	}
 	
+	@PostMapping("{id}/adjuntarguia")
+	public ResponseEntity<Campana> adjuntarguia(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.adjuntarGuia(id, usuarioId, matricula, multipartfile), HttpStatus.OK);
+	}
+	
 	
 }
