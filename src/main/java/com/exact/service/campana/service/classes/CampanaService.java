@@ -698,6 +698,24 @@ public class CampanaService implements ICampanaService {
 				
 			return campanaDao.save(campanaBD);
 	}
+	
 
+	@Override
+	public Campana aprobarGuia(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_VERIFICADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+	
+	@Override
+	public Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_DENEGADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+	
+	
 
 }
