@@ -20,7 +20,9 @@ public enum EstadoCampanaEnum {
 	GUIA_ADJUNTADA(16),
 	GUIA_VERIFICADA(17),
 	GUIA_DENEGADA(18),
-	INICIADA(19);
+	DISTRIBUCION_INICIADA(19),
+	REPORTE_ADJUNTADO(20);
+	
 
 		
 	private final int value;
