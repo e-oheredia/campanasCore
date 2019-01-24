@@ -748,6 +748,9 @@ public class CampanaService implements ICampanaService {
 			}
 		});
 		
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.REPORTE_ADJUNTADO.getValue()))));
+		
 		return campanaDao.save(campanaBD);
 	}
 	

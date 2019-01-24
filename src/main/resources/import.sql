@@ -94,6 +94,12 @@ SET IDENTITY_INSERT [dbo].[tipo_destino] ON
 INSERT [dbo].[tipo_destino] ([tipo_destino_id], [nombre]) VALUES (1, N'INTERNA')
 INSERT [dbo].[tipo_destino] ([tipo_destino_id], [nombre]) VALUES (2, N'EXTERNA')
 SET IDENTITY_INSERT [dbo].[tipo_destino] OFF
+
+SET IDENTITY_INSERT [dbo].[region] ON 
+INSERT [dbo].[region] ([region_id], [nombre], [plazo]) VALUES (1,'Lima',5)
+INSERT [dbo].[region] ([region_id], [nombre], [plazo]) VALUES (2,'Provincia',10)
+SET IDENTITY_INSERT [dbo].[region] OFF
+
 SET IDENTITY_INSERT [dbo].[campana] ON 
 
 INSERT [dbo].[campana] ([campana_id], [autorizado], [buzon_id], [costo_campana], [nombre], [observacion], [paquete_habilitado_id], [plazo_id], [proveedor_id], [regulatorio], [requiere_georreferencia], [requiere_gps], [ruta_autorizacion], [ruta_muestra], [tipo_documento_id], [accion_restos_cargos_campana_id], [accion_restos_rezagos_campana_id], [auspiciador_id], [proveedor_impresion_id], [tipo_campana], [tipo_destino_id]) VALUES (1, 0, 1, 540, N'CAMPAÑA 1', NULL, 5, 1, 2, 0, 1, 0, NULL, NULL, 1, 1, 1, 1, NULL, 2, 1)
