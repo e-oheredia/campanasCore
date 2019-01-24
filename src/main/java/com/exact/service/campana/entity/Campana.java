@@ -2,6 +2,7 @@ package com.exact.service.campana.entity;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -26,6 +27,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -152,6 +154,10 @@ public class Campana implements Serializable {
 			});
 		}
 	}
+	
+	@JsonFormat
+    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone="America/Lima")
+	private Date fechaDistribucion;
 			
 	public String getRutaGuia() {
 		return rutaGuia;

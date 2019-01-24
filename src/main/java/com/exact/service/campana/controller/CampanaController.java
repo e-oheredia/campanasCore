@@ -251,6 +251,16 @@ public class CampanaController {
 		
 		return new ResponseEntity<Campana>(campanaService.iniciarDistribuicion(id, usuarioId, matricula), HttpStatus.OK);
 	}
+	
+	@PutMapping("/cargarreportefinal")
+	public ResponseEntity<Campana> subirResultados(@RequestBody Campana campana, Authentication authentication) {
+		@SuppressWarnings("unchecked")
+		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
+		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
+		String matricula = datosUsuario.get("matricula").toString();
+		
+		return new ResponseEntity<Campana>(campanaService.subirResultados(campana, usuarioId, matricula), HttpStatus.OK);
+	}
 
 	
 }

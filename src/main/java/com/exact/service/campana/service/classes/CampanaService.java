@@ -710,9 +710,6 @@ public class CampanaService implements ICampanaService {
 	
 	@Override
 	public Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) {
-		
-		
-		
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_DENEGADA.getValue()))));
@@ -724,6 +721,33 @@ public class CampanaService implements ICampanaService {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.DISTRIBUCION_INICIADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Campana subirResultados(Campana campana, Long usuarioId, String matricula) {
+		
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+		
+		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
+		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false)
+				.collect(Collectors.toList());
+
+		Iterable<ItemCampana> icampana = campana.getItemsCampana();
+		List<ItemCampana> itemscampana = StreamSupport.stream(icampana.spliterator(), false)
+				.collect(Collectors.toList());
+		
+		itemcampanaBD.forEach(itemcampana -> {
+			for (int i = 0; i < itemscampana.size(); i++) {
+				if (itemcampana.getId().longValue() == itemscampana.get(i).getId().longValue()) {
+					itemcampana.setDetalle(itemscampana.get(i).getDetalle());
+					itemcampana.setEstadoItemCampana(itemscampana.get(i).getEstadoItemCampana());
+					itemscampana.remove(i);
+					break;
+				}
+			}
+		});
+		
 		return campanaDao.save(campanaBD);
 	}
 	

@@ -38,4 +38,5 @@ public interface ICampanaService {
 	Campana aprobarGuia(Long campanaId, Long usuarioId, String matricula);
 	Campana denegarGuia(Long campanaId, Long usuarioId, String matricula);
 	Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula);
+	Campana subirResultados(Campana campana, Long usuarioId, String matricula);
 }
