@@ -64,7 +64,7 @@ public class CampanaController {
 
 	@PutMapping("{id}/seleccionproveedor")
 	public ResponseEntity<Campana> seleccionarProveedor(@PathVariable Long id, @RequestBody Campana campana,
-			Authentication authentication) {
+			Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -74,7 +74,7 @@ public class CampanaController {
 	
 	@PutMapping("{id}/recotizacion")
 	public ResponseEntity<Campana> recotizar(@PathVariable Long id, @RequestBody Campana campana,
-			Authentication authentication) {
+			Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -92,7 +92,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/confirmarbasegeo")
-	public ResponseEntity<Campana> confirmarBaseGeo(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<Campana> confirmarBaseGeo(@PathVariable Long id, Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -102,7 +102,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("/subirbaseproveedor")
-	public ResponseEntity<Campana> subirBaseProveedor(@RequestBody Campana campana, Authentication authentication) {
+	public ResponseEntity<Campana> subirBaseProveedor(@RequestBody Campana campana, Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -112,7 +112,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("/modificarbasegeo")
-	public ResponseEntity<Campana> modificarBaseGeo(@RequestBody Campana campana, Authentication authentication) {
+	public ResponseEntity<Campana> modificarBaseGeo(@RequestBody Campana campana, Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -122,7 +122,7 @@ public class CampanaController {
 	}
 	
 	@PostMapping("{id}/adjuntarconformidad")
-	public ResponseEntity<Campana> adjuntarConformidad(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+	public ResponseEntity<Campana> adjuntarConformidad(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -132,7 +132,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/solicitarmuestra")
-	public ResponseEntity<Campana> solicitarMuestra(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<Campana> solicitarMuestra(@PathVariable Long id, Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -142,7 +142,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/denegarconformidad")
-	public ResponseEntity<Campana> denegarConformidad(@PathVariable Long id, Authentication authentication) {
+	public ResponseEntity<Campana> denegarConformidad(@PathVariable Long id, Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -152,7 +152,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/aceptarconformidad")
-	public ResponseEntity<Campana> aceptarConformidad(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> aceptarConformidad(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -162,7 +162,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/aprobarmuestra")
-	public ResponseEntity<Campana> aprobarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> aprobarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -172,7 +172,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/denegarmuestra")
-	public ResponseEntity<Campana> denegarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> denegarMuestra(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -182,7 +182,7 @@ public class CampanaController {
 	}
 	
 	@PostMapping("{id}/adjuntarmuestra")
-	public ResponseEntity<Campana> adjuntarMuestra(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+	public ResponseEntity<Campana> adjuntarMuestra(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -192,7 +192,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/iniciarimpresion")
-	public ResponseEntity<Campana> iniciarImpresion(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> iniciarImpresion(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -202,7 +202,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("/datosimpresion")
-	public ResponseEntity<Campana> adjuntarDatosImpresion(@RequestBody Campana campana, Authentication authentication) throws IOException {
+	public ResponseEntity<Campana> adjuntarDatosImpresion(@RequestBody Campana campana, Authentication authentication) throws IOException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -212,7 +212,7 @@ public class CampanaController {
 	}
 	
 	@PostMapping("{id}/adjuntarguia")
-	public ResponseEntity<Campana> adjuntarguia(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException {
+	public ResponseEntity<Campana> adjuntarguia(@PathVariable Long id, Authentication authentication, @RequestParam("file") MultipartFile multipartfile) throws IOException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -223,7 +223,7 @@ public class CampanaController {
 	
 
 	@PutMapping("{id}/aprobarguia")
-	public ResponseEntity<Campana> aprobarGuia(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> aprobarGuia(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -233,7 +233,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/denegarguia")
-	public ResponseEntity<Campana> denegarGuia(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> denegarGuia(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());

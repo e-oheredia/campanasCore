@@ -49,6 +49,16 @@ public class ItemCampana implements Serializable {
 	@Column(name = "correlativo_base", nullable = false)
 	private int correlativoBase;
 
+	private String idc;
+
+	public String getIdc() {
+		return idc;
+	}
+
+	public void setIdc(String idc) {
+		this.idc = idc;
+	}
+
 	public int getCorrelativoBase() {
 		return correlativoBase;
 	}
