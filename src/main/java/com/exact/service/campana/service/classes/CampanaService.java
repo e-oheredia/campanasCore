@@ -753,4 +753,11 @@ public class CampanaService implements ICampanaService {
 		return campanaDao.save(campanaBD);
 	}
 
+	@Override
+	public Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula) {
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.DISTRIBUCION_INICIADA.getValue()))));
+		return campanaDao.save(campanaBD);
+	}
 }
