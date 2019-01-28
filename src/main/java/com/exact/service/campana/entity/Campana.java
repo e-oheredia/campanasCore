@@ -158,7 +158,17 @@ public class Campana implements Serializable {
 	@JsonFormat
     (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone="America/Lima")
 	private Date fechaDistribucion;
+	
+	
 			
+	public Date getFechaDistribucion() {
+		return fechaDistribucion;
+	}
+
+	public void setFechaDistribucion(Date fechaDistribucion) {
+		this.fechaDistribucion = fechaDistribucion;
+	}
+
 	public String getRutaGuia() {
 		return rutaGuia;
 	}

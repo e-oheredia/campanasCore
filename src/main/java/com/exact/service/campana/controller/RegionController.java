@@ -11,7 +11,7 @@ import com.exact.service.campana.entity.Region;
 import com.exact.service.campana.service.interfaces.IRegionService;
 
 @RestController
-@RequestMapping("/region")
+@RequestMapping("/regiones")
 public class RegionController {
 
 	@Autowired

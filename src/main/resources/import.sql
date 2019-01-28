@@ -96,8 +96,8 @@ INSERT [dbo].[tipo_destino] ([tipo_destino_id], [nombre]) VALUES (2, N'EXTERNA')
 SET IDENTITY_INSERT [dbo].[tipo_destino] OFF
 
 SET IDENTITY_INSERT [dbo].[region] ON 
-INSERT [dbo].[region] ([region_id], [nombre], [plazo]) VALUES (1,'Lima',5)
-INSERT [dbo].[region] ([region_id], [nombre], [plazo]) VALUES (2,'Provincia',10)
+INSERT [dbo].[region] ([region_id], [nombre], [plazo]) VALUES (1,'LIMA',5)
+INSERT [dbo].[region] ([region_id], [nombre], [plazo]) VALUES (2,'PROVINCIA',10)
 SET IDENTITY_INSERT [dbo].[region] OFF
 
 SET IDENTITY_INSERT [dbo].[campana] ON 
