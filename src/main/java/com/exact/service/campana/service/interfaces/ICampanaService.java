@@ -38,4 +38,6 @@ public interface ICampanaService {
 	Campana aprobarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 	Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 	Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula);
+	Campana subirResultados(Campana campanaId, Long usuarioId, String matricula);
+
 }

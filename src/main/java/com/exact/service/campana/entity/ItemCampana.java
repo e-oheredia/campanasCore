@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.PrePersist;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -45,9 +47,31 @@ public class ItemCampana implements Serializable {
 	private boolean enviable;
 	@Column(name = "correlativo", nullable = true)
 	private int correlativo;
-
 	@Column(name = "correlativo_base", nullable = false)
 	private int correlativoBase;
+	@Column(name = "detalle", nullable = true)
+	private String detalle;
+	@ManyToOne
+	@JoinColumn(name="estado_item_campana_id", nullable = true)
+	private EstadoItemCampana estadoItemCampana;
+		
+	
+	public String getDetalle() {
+		return detalle;
+	}
+
+
+	public void setDetalle(String detalle) {
+		this.detalle = detalle;
+	}
+
+	public EstadoItemCampana getEstadoItemCampana() {
+		return estadoItemCampana;
+	}
+
+	public void setEstadoItemCampana(EstadoItemCampana estadoItemCampana) {
+		this.estadoItemCampana = estadoItemCampana;
+	}
 
 	private String idc;
 
@@ -58,6 +82,7 @@ public class ItemCampana implements Serializable {
 	public void setIdc(String idc) {
 		this.idc = idc;
 	}
+
 
 	public int getCorrelativoBase() {
 		return correlativoBase;

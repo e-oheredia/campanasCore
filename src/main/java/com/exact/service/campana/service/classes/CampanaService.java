@@ -695,12 +695,14 @@ public class CampanaService implements ICampanaService {
 		campanaBD.setProveedorImpresion(proveedorImpresion);
 
 		if (campana.getProveedorImpresion().getFechaRecojo()
-				.after(campanaBD.getUltimoSeguimientoCampana().getFecha())) {
+				.after(campanaBD.getUltimoSeguimientoCampana().getFecha())){
 
 			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
-					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_POR_RECOGER.getValue()))));
 
-		} else {
+					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CAMPANA_POR_RECOGER.getValue()))));
+		}
+		 else {
+
 			return null;
 		}
 
@@ -713,7 +715,7 @@ public class CampanaService implements ICampanaService {
 
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		CampanaUtils.tieneEstadoPermitido(campanaBD,
-				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.IMPRESION_POR_RECOGER.getValue(), (long) EstadoCampanaEnum.GUIA_DENEGADA.getValue())));
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CAMPANA_POR_RECOGER.getValue(), (long) EstadoCampanaEnum.GUIA_DENEGADA.getValue())));
 		String ruta = "guias";
 
 		if (file != null) {
@@ -743,8 +745,11 @@ public class CampanaService implements ICampanaService {
 		return campanaDao.save(campanaBD);
 	}
 
+	
+
 	@Override
 	public Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		CampanaUtils.tieneEstadoPermitido(campanaBD,
 				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GUIA_ADJUNTADA.getValue())));
@@ -760,4 +765,39 @@ public class CampanaService implements ICampanaService {
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.DISTRIBUCION_INICIADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
+
+
+	@Override
+	public Campana subirResultados(Campana campana, Long usuarioId, String matricula) {
+		
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+		
+		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
+		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false)
+				.collect(Collectors.toList());
+
+		Iterable<ItemCampana> icampana = campana.getItemsCampana();
+		List<ItemCampana> itemscampana = StreamSupport.stream(icampana.spliterator(), false)
+				.collect(Collectors.toList());
+		
+		itemcampanaBD.forEach(itemcampana -> {
+			for (int i = 0; i < itemscampana.size(); i++) {
+				if (itemcampana.getId().longValue() == itemscampana.get(i).getId().longValue()) {
+					itemcampana.setDetalle(itemscampana.get(i).getDetalle());
+					itemcampana.setEstadoItemCampana(itemscampana.get(i).getEstadoItemCampana());
+					itemscampana.remove(i);
+					break;
+				}
+			}
+		});
+		
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.REPORTE_ADJUNTADO.getValue()))));
+		
+		return campanaDao.save(campanaBD);
+	}
+	
+	
+
+
 }
