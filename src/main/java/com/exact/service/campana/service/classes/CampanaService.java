@@ -736,10 +736,11 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
-	public Campana aprobarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
-		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+	public Campana aprobarGuia(Campana campana, Long usuarioId, String matricula) throws IllegalAccessException {
+		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
 		CampanaUtils.tieneEstadoPermitido(campanaBD,
 				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GUIA_ADJUNTADA.getValue())));
+		campanaBD.setFechaDistribucion(campana.getFechaDistribucion());
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_VERIFICADA.getValue()))));
 		return campanaDao.save(campanaBD);

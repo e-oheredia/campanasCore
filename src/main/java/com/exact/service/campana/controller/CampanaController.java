@@ -223,13 +223,13 @@ public class CampanaController {
 	
 
 	@PutMapping("{id}/aprobarguia")
-	public ResponseEntity<Campana> aprobarGuia(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
+	public ResponseEntity<Campana> aprobarGuia(@RequestBody Campana campana, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
 		String matricula = datosUsuario.get("matricula").toString();
 		
-		return new ResponseEntity<Campana>(campanaService.aprobarGuia(id, usuarioId, matricula), HttpStatus.OK);
+		return new ResponseEntity<Campana>(campanaService.aprobarGuia(campana, usuarioId, matricula), HttpStatus.OK);
 	}
 	
 	@PutMapping("{id}/denegarguia")
