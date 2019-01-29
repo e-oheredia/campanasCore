@@ -146,6 +146,7 @@ public class Campana implements Serializable {
 	@JsonInclude(value=Include.	NON_NULL)
 	private Map<String, Object> paqueteHabilitado;
 	
+
 	@PrePersist
 	public void prePersist() {
 		if (!this.requiereGeorreferencia) {

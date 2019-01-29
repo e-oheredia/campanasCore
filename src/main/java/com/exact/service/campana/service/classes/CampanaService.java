@@ -2,7 +2,6 @@ package com.exact.service.campana.service.classes;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.http.client.ClientProtocolException;
-import org.hibernate.mapping.Collection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,15 +9,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +53,7 @@ import com.exact.service.campana.utils.OrdenarItemCampanaImpresion;
 import com.exact.service.campana.entity.SeguimientoCampana;
 import com.exact.service.campana.enumerator.EstadoCampanaEnum;
 import com.exact.service.campana.service.interfaces.ICampanaService;
+import com.exact.service.campana.utils.CampanaUtils;
 import com.exact.service.campana.utils.CommonUtils;
 
 @Service
@@ -97,7 +94,7 @@ public class CampanaService implements ICampanaService {
 
 	@Autowired
 	EmpleadoController empleadoController;
-	
+
 	@Autowired
 	HandleController handlecontroller;
 
@@ -145,8 +142,14 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
-	public Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId, String matricula) {
+	public Campana seleccionarProveedor(Long campanaId, Campana campana, Long usuarioId, String matricula)
+			throws IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CREADO.getValue())));
+
 		campanaBD.setProveedor(campana.getProveedor());
 		campanaBD.setCostoCampana(campana.getCostoCampana());
 		campanaBD.setTipoCampana(campana.getTipoCampana());
@@ -159,8 +162,8 @@ public class CampanaService implements ICampanaService {
 								new EstadoCampana(Long.valueOf(
 										campanaBD.isRequiereGeorreferencia() ? EstadoCampanaEnum.ASIGNADO.getValue()
 												: EstadoCampanaEnum.COTIZADA.getValue()))));
-		return campanaDao.save(campanaBD);
 
+		return campanaDao.save(campanaBD);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -169,22 +172,24 @@ public class CampanaService implements ICampanaService {
 			throws ClientProtocolException, IOException, JSONException {
 
 		Iterable<Campana> campanas = campanaDao.listarCampanasPorEstado(estadoId);
+
 		List<Campana> campanasList = StreamSupport.stream(campanas.spliterator(), false).collect(Collectors.toList());
 
 		if (campanasList == null) {
 			return null;
 		}
-		
+
 		if (authentication.getAuthorities().stream()
 				.anyMatch(authority -> authority.getAuthority().equals("USUARIO"))) {
 			campanasList.removeIf(campana -> !campana.getPrimerSeguimientoCampana().getMatricula()
 					.equals(((Map<String, Object>) authentication.getPrincipal()).get("matricula").toString()));
-		}else if (authentication.getAuthorities().stream()
-				.anyMatch(authority -> authority.getAuthority().equals("PROVEEDOR"))){
+		} else if (authentication.getAuthorities().stream()
+				.anyMatch(authority -> authority.getAuthority().equals("PROVEEDOR"))) {
 			JSONObject json = new JSONObject(empleadoController.listarEmpleadoAuthenticado(authentication).getBody());
 			Map<String, Object> empleadoProveedor = CommonUtils.jsonToMap(json);
-			Map<String, Object> proveedor =	(Map<String, Object>) empleadoProveedor.get("proveedor");
-			campanasList.removeIf(campana -> campana.getProveedorId().longValue() != Long.parseLong(proveedor.get("id").toString()));
+			Map<String, Object> proveedor = (Map<String, Object>) empleadoProveedor.get("proveedor");
+			campanasList.removeIf(
+					campana -> campana.getProveedorId().longValue() != Long.parseLong(proveedor.get("id").toString()));
 		}
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
@@ -262,12 +267,13 @@ public class CampanaService implements ICampanaService {
 				.anyMatch(authority -> authority.getAuthority().equals("USUARIO"))) {
 			campanasList.removeIf(campana -> !campana.getPrimerSeguimientoCampana().getMatricula()
 					.equals(((Map<String, Object>) authentication.getPrincipal()).get("matricula").toString()));
-		}else if (authentication.getAuthorities().stream()
-				.anyMatch(authority -> authority.getAuthority().equals("PROVEEDOR"))){
+		} else if (authentication.getAuthorities().stream()
+				.anyMatch(authority -> authority.getAuthority().equals("PROVEEDOR"))) {
 			JSONObject json = new JSONObject(empleadoController.listarEmpleadoAuthenticado(authentication).getBody());
 			Map<String, Object> empleadoProveedor = CommonUtils.jsonToMap(json);
-			Map<String, Object> proveedor =	(Map<String, Object>) empleadoProveedor.get("proveedor");
-			campanasList.removeIf(campana -> campana.getProveedorId().longValue() != Long.parseLong(proveedor.get("id").toString()));
+			Map<String, Object> proveedor = (Map<String, Object>) empleadoProveedor.get("proveedor");
+			campanasList.removeIf(
+					campana -> campana.getProveedorId().longValue() != Long.parseLong(proveedor.get("id").toString()));
 		}
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
@@ -307,8 +313,11 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
-	public Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula) {
+	public Campana recotizar(Long campanaId, Campana campana, Long usuarioId, String matricula)
+			throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GEOREFERENCIADA_Y_CONFIRMADA.getValue())));
 
 		campanaBD.setCostoCampana(campana.getCostoCampana());
 		campanaBD.addSeguimientoCampana(
@@ -457,10 +466,11 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
-	public Campana confirmarBaseGeo(Long campanaId, Long usuarioId, String matricula) {
+	public Campana confirmarBaseGeo(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GEOREFERENCIADA.getValue())));
 		Optional<ItemCampana> ic = campanaBD.getItemsCampana().stream().filter(itemCampana -> !itemCampana.isEnviable())
 				.findFirst();
 
@@ -477,10 +487,11 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
-	public Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula) {
+	public Campana subirBaseProveedor(Campana campana, Long usuarioId, String matricula) throws IllegalAccessException {
 
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
-
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.ASIGNADO.getValue(),(long) EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA.getValue()))));
 
@@ -505,10 +516,11 @@ public class CampanaService implements ICampanaService {
 		return campanaDao.save(campanaBD);
 	}
 
-	public Campana modificarBase(Campana campana, Long usuarioId, String matricula) {
+	public Campana modificarBase(Campana campana, Long usuarioId, String matricula) throws IllegalAccessException {
 
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
-
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GEOREFERENCIADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GEOREFERENCIADA_Y_MODIFICADA.getValue()))));
 
@@ -531,85 +543,99 @@ public class CampanaService implements ICampanaService {
 			}
 		});
 		return campanaDao.save(campanaBD);
-		
+
 	}
 
 	@Override
-	public Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile file) throws IOException {
-				
+	public Campana adjuntarConformidad(Long campanaId, Long usuarioId, String matricula, MultipartFile file)
+			throws IOException, IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-		
-		String ruta= "autorizaciones";
-		
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.COTIZADA.getValue(), (long) EstadoCampanaEnum.CONFORMIDAD_DENEGADA.getValue())));
+		String ruta = "autorizaciones";
+
 		if (file != null) {
 			String rutaAutorizacion = campanaBD.getId().toString() + "."
 					+ FilenameUtils.getExtension(file.getOriginalFilename());
 			campanaBD.setRutaAutorizacion(rutaAutorizacion);
-			MockMultipartFile multipartFile = new MockMultipartFile(rutaAutorizacion, rutaAutorizacion,file.getContentType(),file.getInputStream());
-			if(handlecontroller.upload(multipartFile,ruta)==1) {
-				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue()))));
-				}else {
-					return null;
-				}
+			MockMultipartFile multipartFile = new MockMultipartFile(rutaAutorizacion, rutaAutorizacion,
+					file.getContentType(), file.getInputStream());
+			if (handlecontroller.upload(multipartFile, ruta) == 1) {
+				campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue()))));
+			} else {
+				return null;
+			}
 		}
-				
-			
+
 		return campanaDao.save(campanaBD);
 	}
 
 	@Override
 
-	public Campana denegarConformidad(Long campanaId, Long usuarioId, String matricula) {
+	public Campana denegarConformidad(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_DENEGADA.getValue()))));
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue())));
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_DENEGADA.getValue()))));
 		return campanaDao.save(campanaBD);
-		
+
 	}
 
 	@Override
-	public Campana aceptarConformidad(Long campanaId, Long usuarioId, String matricula) throws JSONException {
-		
+	public Campana aceptarConformidad(Long campanaId, Long usuarioId, String matricula) throws JSONException, IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-		
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue())));
 		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
-		List<ItemCampana> lstitemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false).collect(Collectors.toList());
-			
+		List<ItemCampana> lstitemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false)
+				.collect(Collectors.toList());
+
 		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(lstitemcampanaBD,
 				distritoController::listarByIds, ItemCampana::getDistritoId);
-		
-		setDistritosToItemsCampana(lstitemcampanaBD, distritos);
-		
-		Collections.sort(lstitemcampanaBD, new OrdenarItemCampanaImpresion().reversed());
-				
-		for(int i=0;i<lstitemcampanaBD.size();i++) {
-			lstitemcampanaBD.get(i).setCorrelativo(i+1);
-		}
-		
-		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue()))));
-				
-		return campanaDao.save(campanaBD);
-				
-	}
-	
 
-	public Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula) {
+		setDistritosToItemsCampana(lstitemcampanaBD, distritos);
+
+		Collections.sort(lstitemcampanaBD, new OrdenarItemCampanaImpresion().reversed());
+
+		for (int i = 0; i < lstitemcampanaBD.size(); i++) {
+			lstitemcampanaBD.get(i).setCorrelativo(i + 1);
+		}
+
+		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue()))));
+
+		return campanaDao.save(campanaBD);
+
+	}
+
+	public Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_SOLICITADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
 
 	@Override
-	public Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula) {
+	public Campana aprobarMuestra(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.MUESTRA_ADJUNTADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ACEPTADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
 
 	@Override
-	public Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula) {
+	public Campana denegarMuestra(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.MUESTRA_ADJUNTADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_DENEGADA.getValue()))));
 		return campanaDao.save(campanaBD);
@@ -617,100 +643,116 @@ public class CampanaService implements ICampanaService {
 
 	@Override
 	public Campana adjuntarMuestra(Long campanaId, Long usuarioId, String matricula, MultipartFile file)
-			throws IOException {
-		
+			throws IOException, IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.MUESTRA_SOLICITADA.getValue(), (long) EstadoCampanaEnum.MUESTRA_DENEGADA.getValue())));
 		String ruta = "muestras";
-			
+
 		if (file != null) {
 			String rutaMuestra = campanaBD.getId().toString() + "."
 					+ FilenameUtils.getExtension(file.getOriginalFilename());
 			campanaBD.setRutaMuestra(rutaMuestra);
-			MockMultipartFile multipartFile = new MockMultipartFile(rutaMuestra, rutaMuestra,file.getContentType(),file.getInputStream());
-			if(handlecontroller.upload(multipartFile,ruta)==1) {
-				 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ADJUNTADA.getValue()))));
-				}else {
-					return null;
-				}
+			MockMultipartFile multipartFile = new MockMultipartFile(rutaMuestra, rutaMuestra, file.getContentType(),
+					file.getInputStream());
+			if (handlecontroller.upload(multipartFile, ruta) == 1) {
+				campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.MUESTRA_ADJUNTADA.getValue()))));
+			} else {
+				return null;
+			}
 		}
-			
-			
+
 		return campanaDao.save(campanaBD);
-	
-		
+
 	}
 
 	@Override
-	public Campana iniciarImpresion(Long campanaId, Long usuarioId, String matricula) {
-		
+	public Campana iniciarImpresion(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.MUESTRA_ACEPTADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_INICIADA.getValue()))));
 		return campanaDao.save(campanaBD);
-		
+
 	}
 
 	@Override
-	public Campana adjuntarDatosImpresion(Campana campana, Long usuarioId, String matricula){
-			
-		
+	public Campana adjuntarDatosImpresion(Campana campana, Long usuarioId, String matricula) throws IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
-		
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.IMPRESION_INICIADA.getValue())));
 		ProveedorImpresion proveedorImpresion = new ProveedorImpresion();
 		proveedorImpresion.setFechaRecojo(campana.getProveedorImpresion().getFechaRecojo());
 		proveedorImpresion.setNombre(campana.getProveedorImpresion().getNombre());
 		proveedorImpresion.setContacto(campana.getProveedorImpresion().getContacto());
 		proveedorImpresion.setDireccion(campana.getProveedorImpresion().getDireccion());
-		
+
 		campanaBD.setProveedorImpresion(proveedorImpresion);
-        
-				
-		if(campana.getProveedorImpresion().getFechaRecojo().after(campanaBD.getUltimoSeguimientoCampana().getFecha())) {
-			
+
+		if (campana.getProveedorImpresion().getFechaRecojo()
+				.after(campanaBD.getUltimoSeguimientoCampana().getFecha())){
+
 			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+
 					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CAMPANA_POR_RECOGER.getValue()))));
-		
-		}else {
+		}
+		 else {
+
 			return null;
 		}
-				
+
 		return campanaDao.save(campanaBD);
 	}
 
 	@Override
-	public Campana adjuntarGuia(Long campanaId, Long usuarioId, String matricula, MultipartFile file) throws IOException {
-			
-			Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
-			String ruta = "guias";
-				
-			if (file != null) {
-				String rutaGuia = campanaBD.getId().toString() + "."
-						+ FilenameUtils.getExtension(file.getOriginalFilename());
-				campanaBD.setRutaGuia(rutaGuia);
-				MockMultipartFile multipartFile = new MockMultipartFile(rutaGuia, rutaGuia ,file.getContentType(),file.getInputStream());
-				if(handlecontroller.upload(multipartFile,ruta)==1) {
-					 campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula, new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_ADJUNTADA.getValue()))));
-					}else {
-						return null;
-					}
+	public Campana adjuntarGuia(Long campanaId, Long usuarioId, String matricula, MultipartFile file)
+			throws IOException, IllegalAccessException {
+
+		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CAMPANA_POR_RECOGER.getValue(), (long) EstadoCampanaEnum.GUIA_DENEGADA.getValue())));
+		String ruta = "guias";
+
+		if (file != null) {
+			String rutaGuia = campanaBD.getId().toString() + "."
+					+ FilenameUtils.getExtension(file.getOriginalFilename());
+			campanaBD.setRutaGuia(rutaGuia);
+			MockMultipartFile multipartFile = new MockMultipartFile(rutaGuia, rutaGuia, file.getContentType(),
+					file.getInputStream());
+			if (handlecontroller.upload(multipartFile, ruta) == 1) {
+				campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_ADJUNTADA.getValue()))));
+			} else {
+				return null;
 			}
-				
-				
-			return campanaDao.save(campanaBD);
+		}
+
+		return campanaDao.save(campanaBD);
 	}
-	
 
 	@Override
-	public Campana aprobarGuia(Long campanaId, Long usuarioId, String matricula) {
+	public Campana aprobarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GUIA_ADJUNTADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_VERIFICADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
+
 	
+
 	@Override
-	public Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) {
+	public Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
+
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GUIA_ADJUNTADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.GUIA_DENEGADA.getValue()))));
 		return campanaDao.save(campanaBD);
@@ -723,6 +765,7 @@ public class CampanaService implements ICampanaService {
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.DISTRIBUCION_INICIADA.getValue()))));
 		return campanaDao.save(campanaBD);
 	}
+
 
 	@Override
 	public Campana subirResultados(Campana campana, Long usuarioId, String matricula) {
@@ -755,5 +798,6 @@ public class CampanaService implements ICampanaService {
 	}
 	
 	
+
 
 }

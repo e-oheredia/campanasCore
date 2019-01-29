@@ -54,12 +54,12 @@ public class ItemCampana implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="estado_item_campana_id", nullable = true)
 	private EstadoItemCampana estadoItemCampana;
-	
-	
+		
 	
 	public String getDetalle() {
 		return detalle;
 	}
+
 
 	public void setDetalle(String detalle) {
 		this.detalle = detalle;
@@ -73,7 +73,17 @@ public class ItemCampana implements Serializable {
 		this.estadoItemCampana = estadoItemCampana;
 	}
 
-	
+	private String idc;
+
+	public String getIdc() {
+		return idc;
+	}
+
+	public void setIdc(String idc) {
+		this.idc = idc;
+	}
+
+
 	public int getCorrelativoBase() {
 		return correlativoBase;
 	}
