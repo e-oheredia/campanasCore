@@ -146,6 +146,12 @@ public class Campana implements Serializable {
 	@JsonInclude(value=Include.	NON_NULL)
 	private Map<String, Object> paqueteHabilitado;
 	
+	@ManyToMany
+	@JoinTable(
+			name="tipo_entrega_campana", 
+			joinColumns=@JoinColumn(name="campana_id"), 
+			inverseJoinColumns=@JoinColumn(name="tipo_entrega_id"))	
+	private Set<TipoAgrupado> tiposEntrega;
 
 	@PrePersist
 	public void prePersist() {
@@ -162,6 +168,14 @@ public class Campana implements Serializable {
 	
 	
 			
+	public Set<TipoAgrupado> getTiposEntrega() {
+		return tiposEntrega;
+	}
+
+	public void setTiposEntrega(Set<TipoAgrupado> tiposEntrega) {
+		this.tiposEntrega = tiposEntrega;
+	}
+
 	public Date getFechaDistribucion() {
 		return fechaDistribucion;
 	}

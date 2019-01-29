@@ -130,6 +130,15 @@ INSERT [dbo].[estado_item_campana] ([estado_item_campana_id], [nombre]) VALUES (
 INSERT [dbo].[estado_item_campana] ([estado_item_campana_id], [nombre]) VALUES (4, N'FALTANTE')
 SET IDENTITY_INSERT [dbo].[estado_item_campana] OFF 
 
+SET IDENTITY_INSERT [dbo].[tipo_entrega] ON 
+INSERT [dbo].[tipo_entrega] ([tipo_entrega_id], [nombre]) VALUES (1, N'ENTREGA CON SELLO')
+INSERT [dbo].[tipo_entrega] ([tipo_entrega_id], [nombre]) VALUES (2, N'ENTREGADO A TITULAR')
+INSERT [dbo].[tipo_entrega] ([tipo_entrega_id], [nombre]) VALUES (3, N'BUZON')
+INSERT [dbo].[tipo_entrega] ([tipo_entrega_id], [nombre]) VALUES (4, N'ENTREGA SIN DATOS')
+INSERT [dbo].[tipo_entrega] ([tipo_entrega_id], [nombre]) VALUES (5, N'BAJO PUERTA')
+INSERT [dbo].[tipo_entrega] ([tipo_entrega_id], [nombre]) VALUES (6, N'ENTREGADO A TERCERO')
+SET IDENTITY_INSERT [dbo].[tipo_entrega] OFF
+
 
 SET IDENTITY_INSERT [dbo].[item_campana] ON 	
 
