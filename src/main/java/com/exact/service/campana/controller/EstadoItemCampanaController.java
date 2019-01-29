@@ -6,12 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.exact.service.campana.entity.EstadoItemCampana;
 import com.exact.service.campana.service.interfaces.IEstadoItemCampanaService;
 
 @Controller
-@RequestMapping("/estadositem")
+@RequestMapping("/estadositemcampana")
 public class EstadoItemCampanaController {
 	
 	@Autowired

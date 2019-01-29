@@ -14,8 +14,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -53,7 +51,7 @@ public class ItemCampana implements Serializable {
 	private int correlativoBase;
 	@Column(name = "detalle", nullable = true)
 	private String detalle;
-	@OneToOne(cascade=CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name="estado_item_campana_id", nullable = true)
 	private EstadoItemCampana estadoItemCampana;
 	

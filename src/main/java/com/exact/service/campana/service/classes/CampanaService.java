@@ -668,7 +668,7 @@ public class CampanaService implements ICampanaService {
 		if(campana.getProveedorImpresion().getFechaRecojo().after(campanaBD.getUltimoSeguimientoCampana().getFecha())) {
 			
 			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
-					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.IMPRESION_POR_RECOGER.getValue()))));
+					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CAMPANA_POR_RECOGER.getValue()))));
 		
 		}else {
 			return null;
