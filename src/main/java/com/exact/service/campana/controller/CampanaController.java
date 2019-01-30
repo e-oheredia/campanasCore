@@ -222,7 +222,7 @@ public class CampanaController {
 	}
 	
 
-	@PutMapping("{id}/aprobarguia")
+	@PutMapping("/aprobarguia")
 	public ResponseEntity<Campana> aprobarGuia(@RequestBody Campana campana, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
