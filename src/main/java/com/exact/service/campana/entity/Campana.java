@@ -151,7 +151,7 @@ public class Campana implements Serializable {
 			name="tipo_entrega_campana", 
 			joinColumns=@JoinColumn(name="campana_id"), 
 			inverseJoinColumns=@JoinColumn(name="tipo_entrega_id"))	
-	private Set<TipoAgrupado> tiposEntrega;
+	private Set<TipoEntrega> tiposEntrega;
 
 	@PrePersist
 	public void prePersist() {
@@ -168,11 +168,11 @@ public class Campana implements Serializable {
 	
 	
 			
-	public Set<TipoAgrupado> getTiposEntrega() {
+	public Set<TipoEntrega> getTiposEntrega() {
 		return tiposEntrega;
 	}
 
-	public void setTiposEntrega(Set<TipoAgrupado> tiposEntrega) {
+	public void setTiposEntrega(Set<TipoEntrega> tiposEntrega) {
 		this.tiposEntrega = tiposEntrega;
 	}
 
