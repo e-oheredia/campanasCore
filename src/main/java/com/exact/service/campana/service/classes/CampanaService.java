@@ -760,8 +760,10 @@ public class CampanaService implements ICampanaService {
 	}
 
 	@Override
-	public Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula) {
+	public Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.GUIA_VERIFICADA.getValue())));
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.DISTRIBUCION_INICIADA.getValue()))));
 		return campanaDao.save(campanaBD);
@@ -769,9 +771,12 @@ public class CampanaService implements ICampanaService {
 
 
 	@Override
-	public Campana subirResultados(Campana campana, Long usuarioId, String matricula) {
+	public Campana subirResultados(Campana campana, Long usuarioId, String matricula) throws IllegalAccessException {
 		
 		Campana campanaBD = campanaDao.findById(campana.getId()).orElse(null);
+		
+		CampanaUtils.tieneEstadoPermitido(campanaBD,
+				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.DISTRIBUCION_INICIADA.getValue())));
 		
 		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
 		List<ItemCampana> itemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false)

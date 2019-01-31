@@ -37,7 +37,7 @@ public interface ICampanaService {
 	Campana adjuntarGuia(Long campanaId, Long usuarioId, String matricula, MultipartFile multipartfile) throws IOException, IllegalAccessException;
 	Campana aprobarGuia(Campana campana, Long usuarioId, String matricula) throws IllegalAccessException;
 	Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
-	Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula);
-	Campana subirResultados(Campana campanaId, Long usuarioId, String matricula);
+	Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
+	Campana subirResultados(Campana campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 
 }
