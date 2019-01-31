@@ -243,7 +243,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("{id}/iniciardistribucion")
-	public ResponseEntity<Campana> iniciarDistribucion(@PathVariable Long id, Authentication authentication) throws JSONException {
+	public ResponseEntity<Campana> iniciarDistribucion(@PathVariable Long id, Authentication authentication) throws JSONException, IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
@@ -253,7 +253,7 @@ public class CampanaController {
 	}
 	
 	@PutMapping("/cargarreportefinal")
-	public ResponseEntity<Campana> subirResultados(@RequestBody Campana campana, Authentication authentication) {
+	public ResponseEntity<Campana> subirResultados(@RequestBody Campana campana, Authentication authentication) throws IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		Map<String, Object> datosUsuario = (Map<String, Object>) authentication.getPrincipal();
 		Long usuarioId = Long.valueOf(datosUsuario.get("idUsuario").toString());
