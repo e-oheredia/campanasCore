@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -801,6 +802,36 @@ public class CampanaService implements ICampanaService {
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.REPORTE_ADJUNTADO.getValue()))));
 		
 		return campanaDao.save(campanaBD);
+	}
+
+	@Override
+	public Iterable<Campana> listarReporteCampana(Date fechaIni, Date fechaFin, Long estadoCampanaId) throws JSONException {
+		
+		Iterable<Campana> campanas = campanaDao.listarReportesCampana(fechaIni, fechaFin, estadoCampanaId);
+		List<Campana> lstcampana = StreamSupport.stream(campanas.spliterator(), false)
+				.collect(Collectors.toList());
+		
+				// Buzones
+				List<Map<String, Object>> buzones = getAtributosFromCampanas(lstcampana, buzonController::listarByIds,
+						Campana::getBuzonId);
+
+				// Plazos
+				List<Map<String, Object>> plazos = getAtributosFromCampanas(lstcampana, plazoController::listarAll);
+
+				// Proveedores
+				List<Map<String, Object>> proveedores = getAtributosFromCampanas(lstcampana, proveedorController::listarAll);
+
+				List<Map<String, Object>> paquetesHabilitado = getAtributosFromCampanas(lstcampana,
+						paqueteController::listarAll);
+
+				// TiposDocumento
+				List<Map<String, Object>> tiposDocumento = getAtributosFromCampanas(lstcampana,
+						tipoDocumentoController::listarByIds, Campana::getTipoDocumentoId);
+
+				setAtributosToCampanas(lstcampana, buzones, plazos, proveedores, tiposDocumento, paquetesHabilitado);
+		
+		
+		return lstcampana;
 	}
 	
 	
