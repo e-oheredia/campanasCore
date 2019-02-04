@@ -3,6 +3,7 @@ package com.exact.service.campana.service.interfaces;
 
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.client.ClientProtocolException;
@@ -39,5 +40,6 @@ public interface ICampanaService {
 	Campana denegarGuia(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 	Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 	Campana subirResultados(Campana campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
+	Iterable<Campana> listarReporteCampana(Date fechaIni, Date fechaFin, Long estadoCampanaId) throws JSONException ;
 
 }

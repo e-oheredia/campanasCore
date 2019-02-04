@@ -1,10 +1,12 @@
 package com.exact.service.campana.controller;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -260,6 +262,30 @@ public class CampanaController {
 		String matricula = datosUsuario.get("matricula").toString();
 		
 		return new ResponseEntity<Campana>(campanaService.subirResultados(campana, usuarioId, matricula), HttpStatus.OK);
+	}
+	
+	@GetMapping("/reporte")
+	public ResponseEntity<String> listarReporteCampana(@RequestParam(name="fechaini", required=false) String fechaini, @RequestParam(name="fechafin",required=false) String fechafin, @RequestParam Long estadoCampanaId) throws ClientProtocolException, IOException, JSONException{
+						
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
+		Date dateI= null;
+		Date dateF= null;
+		
+		try {
+			dateI = dt.parse(fechaini);
+			dateF = dt.parse(fechafin); 
+		} catch (Exception e) {
+			return new ResponseEntity<String>("FORMATO DE FECHAS NO VALIDA", HttpStatus.BAD_REQUEST);
+		}
+		
+		if(dateF.compareTo(dateI)>0 || dateF.equals(dateI)) 
+		{
+			Iterable<Campana> campanas = campanaService.listarReporteCampana(dateI, dateF, estadoCampanaId);
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		    return new ResponseEntity<String>(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(campanas), HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("RANGO DE FECHA NO VALIDA", HttpStatus.BAD_REQUEST);	
 	}
 
 	
