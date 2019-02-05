@@ -195,9 +195,17 @@ public class CampanaService implements ICampanaService {
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
 
+		
+		JSONArray distritosJson = new JSONArray(distritoController.listarAll().getBody().toString());
+		
+		List<Map<String, Object>> distritos = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(distritosJson).spliterator(), false).collect(Collectors.toList());
+		
+		
+		
 		// Distritos
-		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
-				distritoController::listarByIds, ItemCampana::getDistritoId);
+		//List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
+		//		distritoController::listarByIds, ItemCampana::getDistritoId);
 
 		setDistritosToItemsCampana(itemsCampana, distritos);
 
@@ -279,8 +287,14 @@ public class CampanaService implements ICampanaService {
 
 		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(campanasList);
 		// Distritos
-		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(itemsCampana,
-				distritoController::listarByIds, ItemCampana::getDistritoId);
+		
+		JSONArray distritosJson = new JSONArray(distritoController.listarAll().getBody().toString());
+		
+		List<Map<String, Object>> distritos = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(distritosJson).spliterator(), false).collect(Collectors.toList());
+				
+		/*getAtributosFromItemsCampana(itemsCampana,
+		distritoController::listarByIds, ItemCampana::getDistritoId);*/
 
 		setDistritosToItemsCampana(itemsCampana, distritos);
 
@@ -339,7 +353,7 @@ public class CampanaService implements ICampanaService {
 				.stream(CommonUtils.jsonArrayToMap(registrosJson).spliterator(), false).collect(Collectors.toList());
 		return registros;
 	}
-
+	
 	private List<Map<String, Object>> getAtributosFromSeguimientosCampana(List<SeguimientoCampana> seguimientosCampana,
 			Function<List<String>, ResponseEntity<String>> funcion,
 			Function<? super SeguimientoCampana, ? extends String> mapper) throws JSONException {
@@ -594,10 +608,12 @@ public class CampanaService implements ICampanaService {
 		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
 		List<ItemCampana> lstitemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false)
 				.collect(Collectors.toList());
-
-		List<Map<String, Object>> distritos = getAtributosFromItemsCampana(lstitemcampanaBD,
-				distritoController::listarByIds, ItemCampana::getDistritoId);
-
+		
+		JSONArray distritosJson = new JSONArray(distritoController.listarAll().getBody());
+		
+		List<Map<String, Object>> distritos = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(distritosJson).spliterator(), false).collect(Collectors.toList());
+		
 		setDistritosToItemsCampana(lstitemcampanaBD, distritos);
 
 		Collections.sort(lstitemcampanaBD, new OrdenarItemCampanaImpresion().reversed());
@@ -605,9 +621,13 @@ public class CampanaService implements ICampanaService {
 		for (int i = 0; i < lstitemcampanaBD.size(); i++) {
 			lstitemcampanaBD.get(i).setCorrelativo(i + 1);
 		}
-
+						
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue()))));
+		
+		//Validar si requiere impresion
+		
+		
 
 		return campanaDao.save(campanaBD);
 
