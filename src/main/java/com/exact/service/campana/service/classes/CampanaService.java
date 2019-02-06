@@ -831,6 +831,15 @@ public class CampanaService implements ICampanaService {
 		List<Campana> lstcampana = StreamSupport.stream(campanas.spliterator(), false)
 				.collect(Collectors.toList());
 		
+		List<ItemCampana> itemsCampana = getItemsCampanasFromCampanas(lstcampana);
+		
+		JSONArray distritosJson = new JSONArray(distritoController.listarAll().getBody().toString());
+		
+		List<Map<String, Object>> distritos = StreamSupport
+				.stream(CommonUtils.jsonArrayToMap(distritosJson).spliterator(), false).collect(Collectors.toList());
+	
+		setDistritosToItemsCampana(itemsCampana, distritos);
+		
 				// Buzones
 				List<Map<String, Object>> buzones = getAtributosFromCampanas(lstcampana, buzonController::listarByIds,
 						Campana::getBuzonId);
