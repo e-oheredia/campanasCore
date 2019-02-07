@@ -49,6 +49,9 @@ public class Campana implements Serializable {
 
 	@Column(name = "requiere_gps", nullable = false)
 	private boolean requiereGps;
+	
+	@Column(name = "requiere_impresion", nullable = false)
+	private boolean requiereImpresion;
 
 	@Column(name = "requiere_georreferencia", nullable = false)
 	private boolean requiereGeorreferencia;
@@ -168,6 +171,14 @@ public class Campana implements Serializable {
 	
 	
 			
+	public boolean isRequiereImpresion() {
+		return requiereImpresion;
+	}
+
+	public void setRequiereImpresion(boolean requiereImpresion) {
+		this.requiereImpresion = requiereImpresion;
+	}
+
 	public Set<TipoEntrega> getTiposEntrega() {
 		return tiposEntrega;
 	}
@@ -475,6 +486,13 @@ public class Campana implements Serializable {
 	public Iterable<ItemCampana> getItemsCampanaEnviables() {
 		
 		return this.itemsCampana.stream().filter(itemCampana -> itemCampana.isEnviable()).collect(Collectors.toList());
+	}
+	
+	public boolean isRequiereGeoImp() {
+		if(isRequiereGeorreferencia() && isRequiereImpresion())
+			return true;
+		else
+			return false;
 	}
 
 	public void setItemsCampana(Set<ItemCampana> itemsCampana) {

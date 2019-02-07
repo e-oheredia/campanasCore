@@ -41,5 +41,5 @@ public interface ICampanaService {
 	Campana iniciarDistribuicion(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 	Campana subirResultados(Campana campanaId, Long usuarioId, String matricula) throws IllegalAccessException;
 	Iterable<Campana> listarReporteCampana(Date fechaIni, Date fechaFin, Long estadoCampanaId) throws JSONException ;
-
+	
 }

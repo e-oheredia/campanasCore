@@ -132,13 +132,17 @@ public class CampanaService implements ICampanaService {
 			GrupoCentroCostos grupoCentroCostos = campana.getAuspiciador().getGrupoCentroCostos();
 			auspiciador = grupoCentroCostosDao.save(grupoCentroCostos);
 		}
-
+		
+		if(campana.getProveedorImpresion()==null) {
+			campana.setRequiereImpresion(true);
+		}
+		
 		campana.getAccionRestosCargosCampana().setAccionRestosCampana(accionRestosCampanaCargos);
 		campana.getAccionRestosRezagosCampana().setAccionRestosCampana(accionRestosCampanaRezagos);
 		campana.setAuspiciador(auspiciador);
 		campana.addSeguimientoCampana(new SeguimientoCampana("", usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CREADO.getValue()))));
-
+		
 		return campanaDao.save(campana);
 	}
 
@@ -154,15 +158,47 @@ public class CampanaService implements ICampanaService {
 		campanaBD.setProveedor(campana.getProveedor());
 		campanaBD.setCostoCampana(campana.getCostoCampana());
 		campanaBD.setTipoCampana(campana.getTipoCampana());
+		
+//		if(!campanaBD.isRequiereImpresion()) {
+//			campanaBD
+//			.addSeguimientoCampana(
+//					new SeguimientoCampana(
+//							"Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
+//									.concat(". Costo: S/ ").concat(String.valueOf(campana.getCostoCampana())),
+//							usuarioId, matricula,
+//							new EstadoCampana(Long.valueOf(EstadoCampanaEnum.COTIZADA.getValue()))));
+//			
+//		}else {
+//			campanaBD
+//			.addSeguimientoCampana(
+//					new SeguimientoCampana(
+//							"Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
+//									.concat(". Costo: S/ ").concat(String.valueOf(campana.getCostoCampana())),
+//							usuarioId, matricula,
+//							new EstadoCampana(Long.valueOf(
+//									campanaBD.isRequiereGeoImp() ? EstadoCampanaEnum.ASIGNADO.getValue()
+//											: EstadoCampanaEnum.COTIZADA.getValue()))));
+//		}
+		
+//// 	Long.valueOf(
+//		campanaBD.isRequiereGeoImp() ? EstadoCampanaEnum.ASIGNADO.getValue()
+//				: EstadoCampanaEnum.COTIZADA.getValue())		
+		
 		campanaBD
-				.addSeguimientoCampana(
-						new SeguimientoCampana(
-								"Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
-										.concat(". Costo: S/ ").concat(String.valueOf(campana.getCostoCampana())),
-								usuarioId, matricula,
-								new EstadoCampana(Long.valueOf(
-										campanaBD.isRequiereGeorreferencia() ? EstadoCampanaEnum.ASIGNADO.getValue()
-												: EstadoCampanaEnum.COTIZADA.getValue()))));
+		.addSeguimientoCampana(
+				new SeguimientoCampana(
+						"Proveedor: ".concat(campana.getProveedor().get("nombre").toString())
+								.concat(". Costo: S/ ").concat(String.valueOf(campana.getCostoCampana())),
+						usuarioId, matricula,
+						new EstadoCampana(Long.valueOf(EstadoCampanaEnum.ASIGNADO.getValue()))));
+		
+		campanaDao.save(campanaBD);
+		
+		if(campanaBD.getProveedorImpresion()!=null) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.COTIZADA.getValue()))));
+		}
+		
 
 		return campanaDao.save(campanaBD);
 	}
@@ -605,6 +641,8 @@ public class CampanaService implements ICampanaService {
 		Campana campanaBD = campanaDao.findById(campanaId).orElse(null);
 		CampanaUtils.tieneEstadoPermitido(campanaBD,
 				new ArrayList<Long>(Arrays.asList((long) EstadoCampanaEnum.CONFORMIDAD_ADJUNTADA.getValue())));
+		
+		
 		Iterable<ItemCampana> icampanaBD = campanaBD.getItemsCampanaEnviables();
 		List<ItemCampana> lstitemcampanaBD = StreamSupport.stream(icampanaBD.spliterator(), false)
 				.collect(Collectors.toList());
@@ -621,16 +659,18 @@ public class CampanaService implements ICampanaService {
 		for (int i = 0; i < lstitemcampanaBD.size(); i++) {
 			lstitemcampanaBD.get(i).setCorrelativo(i + 1);
 		}
-						
+		
 		campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
 				new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CONFORMIDAD_ACEPTADA.getValue()))));
 		
-		//Validar si requiere impresion
-		
-		
+		campanaDao.save(campanaBD);
 
+		if(campanaBD.getProveedorImpresion()!=null) {
+			campanaBD.addSeguimientoCampana(new SeguimientoCampana(usuarioId, matricula,
+					new EstadoCampana(Long.valueOf(EstadoCampanaEnum.CAMPANA_POR_RECOGER.getValue()))));
+		}
+		
 		return campanaDao.save(campanaBD);
-
 	}
 
 	public Campana solicitarMuestra(Long campanaId, Long usuarioId, String matricula) throws IllegalAccessException {
@@ -862,6 +902,8 @@ public class CampanaService implements ICampanaService {
 		
 		return lstcampana;
 	}
+	
+	
 	
 	
 
